@@ -1,0 +1,11 @@
+asgiref
+backports.zoneinfo
+Django
+django-environ 
+sqlparse
+django-environ
+python-decouple
+djangorestframework
+mysqlclient
+python-dotenv
+pytz
