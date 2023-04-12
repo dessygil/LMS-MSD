@@ -1,4 +1,7 @@
 from functools import wraps
+from .serializers import UserSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
 import jwt
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
@@ -35,6 +38,16 @@ def requires_scope(required_scope):
             return response
         return decorated
     return require_scope
+
+class RegisterView(APIView):
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            if user:
+                return Response(serializer.data, status=201)
+        return JsonResponse(serializer.errors)
+
 
 # Test endpoints
 @api_view(['GET'])

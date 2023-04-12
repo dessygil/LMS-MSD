@@ -6,7 +6,9 @@ main.models is used for the gantt chart we are building to represent a laborator
 the connectors are meant to act as list to reference what machines are needed per experiment and 
 what samples a user has.
 """
+
 User = get_user_model()
+
 class Experiment(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
