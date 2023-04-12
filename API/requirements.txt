@@ -10,3 +10,8 @@ python-dotenv
 pytz
 python-jose 
 social-auth-app-django
+cryptography
+django-cors-headers
+drf-jwt
+pyjwt
+requests
