@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 
 """
 main.models is used for the gantt chart we are building to represent a laboratory schedule.
@@ -6,13 +7,7 @@ the connectors are meant to act as list to reference what machines are needed pe
 what samples a user has.
 """
 
-class User(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    name = models.CharField(max_length=255)
-    email = models.EmailField()
-    username = models.CharField(max_length=255)
-    password = models.CharField(max_length=255)
-    created_at = models.DateField()
+User = get_user_model()
 
 class Experiment(models.Model):
     id = models.BigAutoField(primary_key=True)

@@ -4,8 +4,14 @@ Django
 django-environ 
 sqlparse
 django-environ
-python-decouple
 djangorestframework
 mysqlclient
 python-dotenv
 pytz
+python-jose 
+social-auth-app-django
+cryptography
+django-cors-headers
+drf-jwt
+pyjwt
+requests
