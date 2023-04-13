@@ -1,0 +1,37 @@
+version: '3.9'
+services:
+  # api:
+  #   build:
+  #     context: ./api
+  #   expose:
+  #     - 8000
+
+  lms-app:
+    build:
+      context: ./lms-app
+    container_name: lms-app
+      # target: runner
+    # volumes:
+    #   - .:/lms-app
+    # command: npm run dev
+    ports:
+      - "3001:3001"
+
+  landing:
+    build:
+      context: ./landing
+    container_name: landing
+    # expose:
+    #   - 3000
+    ports:
+      - "3000:3000"
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      # - api
+      - lms-app
+      - landing
