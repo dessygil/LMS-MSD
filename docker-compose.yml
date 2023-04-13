@@ -2,7 +2,8 @@ version: '3.9'
 services:
   api:
     build:
-      context: ./api-test
+      # context: ./api-test
+      context: ./API
     command: python manage.py runserver 0.0.0.0:8000
     container_name: api
     ports:
