@@ -73,10 +73,11 @@ JWT_AUTH = {
         'auth0authorization.utils.jwt_get_username_from_payload_handler',
     'JWT_DECODE_HANDLER':
         'auth0authorization.utils.jwt_decode_token',
-    'JWT_ALGORITHM': 'RS256',
+    'JWT_ALGORITHM': os.getenv('JWT_ALGORITHM'),
     'JWT_AUDIENCE': os.getenv('JWT_AUDIENCE'),
     'JWT_ISSUER': os.getenv('JWT_ISSUER'),
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
+    'JWT_PUBLIC_KEY': os.getenv('JWT_PUBLIC_KEY'),
 }
 
 MIDDLEWARE = [
@@ -117,18 +118,19 @@ WSGI_APPLICATION = "API.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# COMMENT OUT FOR LOCAL TESTING
 
-DATABASES = {
-  'default': {
-    'ENGINE': 'django_psdb_engine',
-    'NAME': os.getenv('DB_NAME'),
-    'HOST': os.getenv('DB_HOST'),
-    'PORT': os.getenv('DB_PORT'),
-    'USER': os.getenv('DB_USER'),
-    'PASSWORD': os.getenv('DB_PASSWORD'),
-    'OPTIONS': {'ssl': {'ca': os.getenv('MYSQL_ATTR_SSL_CA')}}
-  }
-}
+# DATABASES = {
+#   'default': {
+#     'ENGINE': 'django_psdb_engine',
+#     'NAME': os.getenv('DB_NAME'),
+#     'HOST': os.getenv('DB_HOST'),
+#     'PORT': os.getenv('DB_PORT'),
+#     'USER': os.getenv('DB_USER'),
+#     'PASSWORD': os.getenv('DB_PASSWORD'),
+#     'OPTIONS': {'ssl': {'ca': os.getenv('MYSQL_ATTR_SSL_CA')}}
+#   }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

@@ -6,12 +6,20 @@ import { useRouter } from "next/router";
 function login() {
   const { user } = useUser();
   const router = useRouter();
-  
+
   if (user) {
     router.push("/dashboard");
     return null;
   }
-  return <Link href="/api/auth/login">Login</Link>;
+  return (
+    <>
+      <Link href="/api/auth/login">Login</Link>
+      <br />
+      <Link href="/api/hello">Hello (Next.JS API Route Example)</Link>
+      <br />
+      <Link href="http://api.localhost:8000">Django API</Link>
+    </>
+  );
 }
 
 export default login;

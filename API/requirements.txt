@@ -1,9 +1,8 @@
 asgiref
-backports.zoneinfo
+backports.zoneinfo;python_version<"3.9"
 Django
 django-environ 
 sqlparse
-django-environ
 djangorestframework
 # mysqlclient
 python-dotenv
@@ -15,3 +14,12 @@ django-cors-headers
 drf-jwt
 pyjwt
 requests
+
+# Authlib~=1.0.0
+# Django>=3.0,<4.0
+# djangorestframework>=3.14.0,<4.0.0
+# djangorestframework-jwt>=1.11.0,<2.0.0
+# psycopg2>=2.8
+# python-dotenv>=1.0.0
+# django-cors-headers>=3.14.0,<4.0.0
+# pyjwt>=1.5.2,<3.0.0

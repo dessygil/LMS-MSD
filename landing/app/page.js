@@ -5,6 +5,8 @@ export default function Home() {
     <>
       <div>LMS-MSD - LANDING</div>
       <Link href="http://app.localhost:3001">APP</Link>
+      <br />
+      <Link href="http://api.localhost:8000">Django API</Link>
     </>
   );
 }

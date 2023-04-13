@@ -1,21 +1,33 @@
 version: '3.9'
 services:
-  # api:
-  #   build:
-  #     context: ./api
-  #   expose:
-  #     - 8000
+  api:
+    build:
+      context: ./api-test
+    command: python manage.py runserver 0.0.0.0:8000
+    container_name: api
+    ports:
+      - "8000:8000"
+    networks:
+      - lms-network
 
   lms-app:
     build:
       context: ./lms-app
     container_name: lms-app
-      # target: runner
-    # volumes:
-    #   - .:/lms-app
-    # command: npm run dev
     ports:
       - "3001:3001"
+    depends_on:
+      - api
+    # volumes:
+      # - /lms-app/node_modules
+      # - ./lms-app/pages:/lms-app/pages
+      # - ./lms-app/public:/lms-app/public
+      # - ./lms-app.styles:/lms-app/styles
+      # - ./lms-app/next.config.js:/lms-app/next.config.js
+      # - ./lms-app/tailwind.config.js:/lms-app/tailwind.config.js
+    command: npm run dev
+    networks:
+      - lms-network
 
   landing:
     build:
@@ -25,6 +37,8 @@ services:
     #   - 3000
     ports:
       - "3000:3000"
+    networks:
+      - lms-network
 
   nginx:
     build:
@@ -32,6 +46,11 @@ services:
     ports:
       - "80:80"
     depends_on:
-      # - api
+      - api
       - lms-app
       - landing
+    networks:
+      - lms-network
+
+networks:
+  lms-network:
