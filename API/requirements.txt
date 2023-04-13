@@ -5,7 +5,7 @@ django-environ
 sqlparse
 django-environ
 djangorestframework
-mysqlclient
+# mysqlclient
 python-dotenv
 pytz
 python-jose 

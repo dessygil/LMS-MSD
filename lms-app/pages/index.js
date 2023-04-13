@@ -1,17 +1,28 @@
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { useRouter } from "next/router";
 
-export default () => {
+function Home() {
   const { user, error, isLoading } = useUser();
+  const router = useRouter();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error.message}</div>;
+  }
 
   if (user) {
-    return (
-      <div>
-        Welcome {user.name}! <a href="/api/auth/logout">Logout</a>
-      </div>
-    );
+    router.push("/dashboard");
+    return null;
   }
-  return <a href="/api/auth/login">Login</a>;
-};
+
+  if (!user) {
+    router.push("/auth/login");
+  }
+
+  return null;
+}
+
+export default Home;
