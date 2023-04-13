@@ -14,6 +14,11 @@ validator = validator.Auth0JWTBearerTokenValidator(
 require_auth.register_token_validator(validator)
 
 
+def api_not_found(request):
+    message = {"message": "No API found with those values."}
+    return JsonResponse(message, status=404)
+
+
 def public(request):
     """No access token required to access this route
     """
