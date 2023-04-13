@@ -3,16 +3,16 @@ from django.http import JsonResponse
 from . import validator
 
 import os
-from dotenv import load_dotenv
+
+from dotenv import load_dotenv, find_dotenv
 load_dotenv()
 
 require_auth = ResourceProtector()
 validator = validator.Auth0JWTBearerTokenValidator(
-    os.getenv("JWT_ISSUER"),
-    os.getenv("JWT_AUDIENCE"),
+    os.getenv('JWT_ISSUER'),
+    os.getenv('JWT_AUDIENCE')
 )
 require_auth.register_token_validator(validator)
-
 
 def public(request):
     """No access token required to access this route

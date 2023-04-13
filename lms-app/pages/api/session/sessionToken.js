@@ -6,7 +6,7 @@ export default withApiAuthRequired(async function products(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
   try {
-    const response = await fetch('http://127.0.0.1:8000/private', {
+    const response = await fetch('http://api:8000/api/private', {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${accessToken}`,

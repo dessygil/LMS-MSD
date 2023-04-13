@@ -7,8 +7,7 @@ from authlib.jose.rfc7517.jwk import JsonWebKey
 
 class Auth0JWTBearerTokenValidator(JWTBearerTokenValidator):
     def __init__(self, domain, audience):
-        issuer = domain
-        jsonurl = urlopen(f"{issuer}.well-known/jwks.json")
+        jsonurl = urlopen(f"{domain}.well-known/jwks.json")
         public_key = JsonWebKey.import_key_set(
             json.loads(jsonurl.read())
         )
@@ -18,5 +17,5 @@ class Auth0JWTBearerTokenValidator(JWTBearerTokenValidator):
         self.claims_options = {
             "exp": {"essential": True},
             "aud": {"essential": True, "value": audience},
-            "iss": {"essential": True, "value": issuer},
+            "iss": {"essential": True, "value": domain},
         }
