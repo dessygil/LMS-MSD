@@ -23,8 +23,8 @@ services:
       - api
     volumes:
       - ./lms-app/:/lms-app
-      # - /lms-app/node_modules
-      # - /lms-app/.next
+      - /lms-app/node_modules
+      - /lms-app/.next
     ports:
       - "3001:3001"
     networks:
@@ -37,8 +37,8 @@ services:
     container_name: landing
     volumes:
       - ./landing/:/landing
-      # - /landing/node_modules
-      # - /landing/.next
+      - /landing/node_modules
+      - /landing/.next
     ports:
       - "3000:3000"
     networks:

@@ -13,13 +13,6 @@ const navigation = [
   { name: "Projects", href: "#", current: false },
   { name: "Calendar", href: "#", current: false },
   { name: "Reports", href: "#", current: false },
-  { name: "Django Public", href: "http://api.localhost:8000/api/public", current: false },
-  { name: "Django Private", href: "http://app.localhost:3001/api/session/token", current: false },
-  {
-    name: "Next.JS Route Example",
-    href: "http://app.localhost:3001/api/hello",
-    current: false,
-  },
 ];
 const userNavigation = [
   { name: "LMS-MSD Landing", href: "http://localhost:3000" },
@@ -243,7 +236,10 @@ export default function Dashboard({ user }) {
             <h1 className="text-3xl font-bold tracking-tight text-gray-900">
               Dashboard
             </h1>
-            <button className="mt-4 px-4 py-1 rounded-lg bg-purple-800 text-white" onClick={handleClick}>TEST</button>
+          <div className="flex flex-col gap-y-2">
+            <Link className="w-1/6 px-4 py-1 rounded-lg bg-purple-800 text-white text-center" href="http://api.localhost:8000/api/public">Django Public</Link>
+            <Link className="w-1/6 px-4 py-1 rounded-lg bg-purple-800 text-white text-center" href="/api/session/token">Django Private</Link>
+          </div>
           </div>
         </header>
         <main>

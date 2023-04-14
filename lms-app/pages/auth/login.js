@@ -13,11 +13,21 @@ function login() {
   }
   return (
     <>
-      <Link href="/api/auth/login">Login</Link>
-      <br />
-      <Link href="/api/hello">Hello (Next.JS API Route Example)</Link>
-      <br />
-      <Link href="http://api.localhost:8000/api/private">Django Private API</Link>
+      <div className="flex flex-col items-center justify-center h-screen gap-4">
+        <Link className="w-1/6 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-800 text-white text-center" href="/api/auth/login">Login</Link>
+        <Link
+          className="w-1/6 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-800 text-white text-center"
+          href="http://api.localhost:8000/api/public"
+        >
+          Django Public
+        </Link>
+        <Link
+          className="w-1/6 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-800 text-white text-center"
+          href="/api/session/token"
+        >
+          Django Private
+        </Link>
+      </div>
     </>
   );
 }
