@@ -4,7 +4,7 @@ from . import validator
 
 import os
 
-from dotenv import load_dotenv, find_dotenv
+from dotenv import load_dotenv
 load_dotenv()
 
 require_auth = ResourceProtector()
