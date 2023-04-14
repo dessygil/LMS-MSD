@@ -4,6 +4,7 @@ services:
     build:
       # context: ./api-test
       context: ./API
+      dockerfile: Dockerfile
     command: python manage.py runserver 0.0.0.0:8000
     container_name: api
     ports:
@@ -14,28 +15,28 @@ services:
   lms-app:
     build:
       context: ./lms-app
+      dockerfile: Dockerfile
     container_name: lms-app
-    ports:
-      - "3001:3001"
     depends_on:
       - api
-    # volumes:
-      # - /lms-app/node_modules
-      # - ./lms-app/pages:/lms-app/pages
-      # - ./lms-app/public:/lms-app/public
-      # - ./lms-app.styles:/lms-app/styles
-      # - ./lms-app/next.config.js:/lms-app/next.config.js
-      # - ./lms-app/tailwind.config.js:/lms-app/tailwind.config.js
-    command: npm run dev
+    volumes:
+      - ./lms-app/:/lms-app
+      - /lms-app/node_modules
+      - /lms-app/.next
+    ports:
+      - "3001:3001"
     networks:
       - lms-network
 
   landing:
     build:
       context: ./landing
+      dockerfile: Dockerfile
     container_name: landing
-    # expose:
-    #   - 3000
+    volumes:
+      - ./landing/:/landing
+      - /landing/node_modules
+      - /landing/.next
     ports:
       - "3000:3000"
     networks:
@@ -44,12 +45,18 @@ services:
   nginx:
     build:
       context: ./nginx
-    ports:
-      - "80:80"
+      dockerfile: Dockerfile
+    container_name: nginx
+    volumes:
+      - ./ningx/:/nginx
+      - /nginx/default.conf
+      - /nginx/nginx.conf
     depends_on:
       - api
       - lms-app
       - landing
+    ports:
+      - "80:80"
     networks:
       - lms-network
 

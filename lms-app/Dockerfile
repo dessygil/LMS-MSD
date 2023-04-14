@@ -1,28 +1,24 @@
 FROM node:alpine
 
-WORKDIR /lms-app
+RUN mkdir -p /lms-app
 
-# RUN npm install --global nodemon
+WORKDIR /lms-app
 
 COPY ./package*.json ./
 
 RUN npm install
 
-COPY next.config.js ./next.config.js
-COPY tailwind.config.js ./tailwind.config.js
-COPY postcss.config.js ./postcss.config.js
+# COPY next.config.js ./next.config.js
+# COPY tailwind.config.js ./tailwind.config.js
+# COPY postcss.config.js ./postcss.config.js
 
-COPY pages ./pages
-COPY public ./public
-COPY styles ./styles
-COPY .env.local .
+# COPY pages ./pages
+# COPY public ./public
+# COPY styles ./styles
+# COPY .env.local .
 
-RUN chmod 600 .env.local
-
-# RUN npm run build
+COPY . /lms-app
 
 EXPOSE 3001
-
-# CMD [ "pm2-runtime", "npm", "--", "start" ]
 
 CMD ["npm", "run", "dev"]

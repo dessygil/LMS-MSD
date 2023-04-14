@@ -22,7 +22,7 @@ const navigation = [
   },
 ];
 const userNavigation = [
-  { name: "Your Profile", href: "#" },
+  { name: "LMS-MSD Landing", href: "http://localhost:3000" },
   { name: "Settings", href: "#" },
   { name: "Sign out", href: "/api/auth/logout" },
 ];
