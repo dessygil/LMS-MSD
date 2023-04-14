@@ -14,7 +14,7 @@ const navigation = [
   { name: "Calendar", href: "#", current: false },
   { name: "Reports", href: "#", current: false },
   { name: "Django Public", href: "http://api.localhost:8000/api/public", current: false },
-  { name: "Django Private", href: "http://api.localhost:8000/api/private", current: false },
+  { name: "Django Private", href: "http://app.localhost:3001/api/session/token", current: false },
   {
     name: "Next.JS Route Example",
     href: "http://app.localhost:3001/api/hello",
@@ -32,10 +32,32 @@ function classNames(...classes) {
 }
 
 export default function Dashboard({ user }) {
-  // const { isLoading, data } = useQuery("public", () => {
-  //   axios.get("http://api.localhost:8000/api/public");
-  // });
-
+  
+  async function handleClick() {
+    try {
+      const response = await fetch(`${process.env.AUTH0_ISSUER_BASE_URL}/oauth/token`, {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          client_id: process.env.AUTH0_CLIENT_ID,
+          client_secret: process.env.AUTH0_CLIENT_SECRET,
+          audience: process.env.AUTH0_AUDIENCE_02,
+          grant_type: 'client_credentials'
+        })
+      });
+      
+      const data = await response.json();
+      console.log(data.access_token);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
+  
   return (
     <>
       {/*
@@ -221,6 +243,7 @@ export default function Dashboard({ user }) {
             <h1 className="text-3xl font-bold tracking-tight text-gray-900">
               Dashboard
             </h1>
+            <button className="mt-4 px-4 py-1 rounded-lg bg-purple-800 text-white" onClick={handleClick}>TEST</button>
           </div>
         </header>
         <main>

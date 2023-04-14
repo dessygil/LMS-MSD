@@ -17,7 +17,7 @@ function login() {
       <br />
       <Link href="/api/hello">Hello (Next.JS API Route Example)</Link>
       <br />
-      <Link href="http://api.localhost:8000">Django API</Link>
+      <Link href="http://api.localhost:8000/api/private">Django Private API</Link>
     </>
   );
 }

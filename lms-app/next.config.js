@@ -11,6 +11,21 @@ const nextConfig = {
     };
     return config;
   },
+  async headers() {
+    return [
+      {
+        // Allow requests to all origins
+        // You may want to restrict this to specific origins in production
+        source: "/api/:path*",
+        headers: [
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "*",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

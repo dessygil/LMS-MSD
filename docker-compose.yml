@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile
     command: python manage.py runserver 0.0.0.0:8000
     container_name: api
+    hostname: api.localhost
     ports:
       - "8000:8000"
     networks:
@@ -17,12 +18,13 @@ services:
       context: ./lms-app
       dockerfile: Dockerfile
     container_name: lms-app
+    hostname: app.localhost
     depends_on:
       - api
     volumes:
       - ./lms-app/:/lms-app
-      - /lms-app/node_modules
-      - /lms-app/.next
+      # - /lms-app/node_modules
+      # - /lms-app/.next
     ports:
       - "3001:3001"
     networks:
@@ -35,8 +37,8 @@ services:
     container_name: landing
     volumes:
       - ./landing/:/landing
-      - /landing/node_modules
-      - /landing/.next
+      # - /landing/node_modules
+      # - /landing/.next
     ports:
       - "3000:3000"
     networks:
@@ -48,7 +50,6 @@ services:
       dockerfile: Dockerfile
     container_name: nginx
     volumes:
-      - ./ningx/:/nginx
       - /nginx/default.conf
       - /nginx/nginx.conf
     depends_on:

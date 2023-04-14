@@ -1,10 +1,3 @@
-import { handleAuth, handleLogin } from '@auth0/nextjs-auth0';
+import { handleAuth } from '@auth0/nextjs-auth0';
 
-export default handleAuth({
-    login: handleLogin({
-        authorizationParams: {
-            audience: process.env.AUTH0_AUDIENCE,
-            scope: 'openid profile email'
-        }
-    })
-});
+export default handleAuth();
