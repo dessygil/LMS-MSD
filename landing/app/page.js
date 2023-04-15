@@ -14,7 +14,7 @@ export default function Home() {
         </Link>
         <Link
           className="w-1/6 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-800 text-white text-center"
-          href="/api/session/token"
+          href="http://app.localhost:3001/api/session/token"
         >
           Django Private
         </Link>
