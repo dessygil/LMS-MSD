@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from API.views import robots_txt
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("" , include('user.urls'))
+    path("" , include('user.urls')),
+    path('robots.txt', robots_txt)
 ]
