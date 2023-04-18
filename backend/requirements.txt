@@ -1,17 +1,16 @@
 asgiref
 backports.zoneinfo;python_version<"3.9"
 Django
-django-environ 
-sqlparse
-djangorestframework
-# mysqlclient
 python-dotenv
-pytz
-python-jose 
-social-auth-app-django
-cryptography
+djangorestframework
 django-cors-headers
-drf-jwt
-pyjwt
-requests
+
+# PlanetScale dependencies
+pymysql
+django-mysql
+mysqlclient
+sqlparse
+pytz
+
+# auth dependencies
 Authlib

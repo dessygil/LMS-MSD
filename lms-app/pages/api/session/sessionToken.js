@@ -1,23 +1,25 @@
-import { getAccessToken, withApiAuthRequired} from '@auth0/nextjs-auth0';
+import { getAccessToken, withApiAuthRequired } from '@auth0/nextjs-auth0';
+
 
 export default withApiAuthRequired(async function ProtectedRoute(req, res) {
-  const accessToken = await getAccessToken(req, res);
-  if (!accessToken) {
+  const accessData = await getAccessToken(req, res);
+  
+  if (!accessData) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
-  console.log(accessToken)
+  
   try {
-    const response = await fetch('http://api.localhost:8000/api/public', {
+    const response = await fetch('http://api.localhost:8000/api/private', {
       method: 'GET',
       headers: {
-        content_type: 'application/json',
-        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessData.accessToken}`,
       },
     });
     const data = await response.json();
     return res.status(200).json({ data });
+
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: 'Internal Server Error' + error });
   }
 });

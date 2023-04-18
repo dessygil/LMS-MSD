@@ -3,7 +3,7 @@ services:
   api:
     build:
       # context: ./api-test
-      context: ./api
+      context: ./backend
       dockerfile: Dockerfile
     command: python manage.py runserver 0.0.0.0:8000
     container_name: api
