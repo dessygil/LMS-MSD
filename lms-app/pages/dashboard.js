@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
@@ -6,6 +7,8 @@ import axios from "axios";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { getAccessToken } from "@auth0/nextjs-auth0";
+
 
 const navigation = [
   { name: "Dashboard", href: "#", current: true },
@@ -49,7 +52,31 @@ export default function Dashboard({ user }) {
       console.error(error);
     }
   }
+
+  // Preferably this code would only run when useUser changes state
+  useEffect(() => {
+    async function checkIfUser() {
+      const accessData = await getAccessToken(req, res);
   
+      if (!accessData) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      const response = await fetch('https://api.localhost:8000/api/user',
+        {
+          method: 'POST',
+          //body: JSON.stringify({ user.email }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessData.accessToken}`,
+          },
+        }
+      );
+      const json = await response.json();
+      console.log(json);
+    }
+    checkIfUser();
+  }, [user]);
   
   return (
     <>

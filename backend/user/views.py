@@ -56,15 +56,16 @@ def private_scoped(request):
 def check_or_create_user(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
-        username = serializer.validated_data.get('username')
         email = serializer.validated_data.get('email')
-        password = serializer.validated_data.get('password')
+        name = serializer.validated_data.get('name')
 
         try:
             user = User.objects.get(email=email)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except User.DoesNotExist:
-            user = User.objects.create(username=username, email=email, password=password)
+            user = User.objects.create(name=name, email=email)
 
         serializer = UserSerializer(user)
+        
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
