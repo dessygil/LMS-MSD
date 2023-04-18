@@ -57,29 +57,6 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = 'user.User'
 
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ),
-}
-
-JWT_AUTH = {
-    'JWT_PAYLOAD_GET_USERNAME_HANDLER':
-        'auth0authorization.utils.jwt_get_username_from_payload_handler',
-    'JWT_DECODE_HANDLER':
-        'auth0authorization.utils.jwt_decode_token',
-    'JWT_ALGORITHM': os.getenv('JWT_ALGORITHM'),
-    'JWT_AUDIENCE': os.getenv('JWT_AUDIENCE'),
-    'JWT_ISSUER': os.getenv('JWT_ISSUER'),
-    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
-    'JWT_PUBLIC_KEY': os.getenv('JWT_PUBLIC_KEY'),
-}
-
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -88,10 +65,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    
-    # Third party apps
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.RemoteUserMiddleware',
 ]
 
 ROOT_URLCONF = "api.urls"
@@ -174,9 +147,3 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# auth0 config
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'django.contrib.auth.backends.RemoteUserBackend',
-]

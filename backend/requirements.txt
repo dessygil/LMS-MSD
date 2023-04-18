@@ -1,6 +1,6 @@
 asgiref
 backports.zoneinfo;python_version<"3.9"
-Django
+django
 python-dotenv
 djangorestframework
 django-cors-headers
