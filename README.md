@@ -9,3 +9,8 @@ Laboratory Information Management System
 3. pip install -r requirements.txt
 
 docker-compose up --build --force-recreate
+
+
+stuff to add maybe
+kubernetes
+gunicorn

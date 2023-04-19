@@ -65,7 +65,17 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    
+    # Third party middleware for cors
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+#cors config
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+       'http://app.localhost:3001',
+       'http://localhost:3001',
+)
 
 ROOT_URLCONF = "api.urls"
 

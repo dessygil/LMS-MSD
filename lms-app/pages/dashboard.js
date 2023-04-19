@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+import { getAccessToken, withApiAuthRequired, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useQuery } from "react-query";
 import axios from "axios";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { getAccessToken } from "@auth0/nextjs-auth0";
+
 
 
 const navigation = [
@@ -53,30 +53,34 @@ export default function Dashboard({ user }) {
     }
   }
 
-  // Preferably this code would only run when useUser changes state
   useEffect(() => {
-    async function checkIfUser() {
-      const accessData = await getAccessToken(req, res);
-  
-      if (!accessData) {
-        return res.status(401).json({ error: 'Unauthorized' });
-      }
+    async function checkUser() {
+      try {
 
-      const response = await fetch('https://api.localhost:8000/api/user',
-        {
-          method: 'POST',
-          //body: JSON.stringify({ user.email }),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessData.accessToken}`,
-          },
-        }
-      );
-      const json = await response.json();
-      console.log(json);
+        // Retrieve access token
+        const response = await fetch('/api/returnAccessToken');
+        const accessData = await response.json();
+        
+        // Call to API to check if user exists and create if not
+        const response2 = await fetch('http://api.localhost:8000/api/user',
+          {
+            method: 'POST',
+            body: JSON.stringify({ user: user }),
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessData.accessToken}`,
+            },
+          }
+        );
+        const json = await response2.json();
+        console.log(json);
+
+      } catch (error) {
+        console.error(error);
+      }
     }
-    checkIfUser();
-  }, [user]);
+    checkUser();
+  });
   
   return (
     <>
@@ -89,6 +93,7 @@ export default function Dashboard({ user }) {
         ```
       */}
       <div className="min-h-full">
+        <p>{ }</p>
         <Disclosure as="nav" className="bg-gray-800">
           {({ open }) => (
             <>
