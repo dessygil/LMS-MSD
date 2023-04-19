@@ -1,3 +1,4 @@
+# Standard dependencies
 asgiref
 backports.zoneinfo;python_version<"3.9"
 django

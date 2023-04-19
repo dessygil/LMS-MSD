@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth import get_user_model
 
 """
 main.models is used for the gantt chart we are building to represent a laboratory schedule.
@@ -7,7 +6,6 @@ the connectors are meant to act as list to reference what machines are needed pe
 what samples a user has.
 """
 
-User = get_user_model()
 
 class Experiment(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -35,6 +33,6 @@ class MachineExperimentConnector(models.Model):
 
 class UserSampleConnector(models.Model):
     id = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='samples')
+    user = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='samples')
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE, related_name='users')
     created_at = models.DateField()

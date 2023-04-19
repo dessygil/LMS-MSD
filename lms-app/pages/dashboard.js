@@ -53,30 +53,34 @@ export default function Dashboard({ user }) {
     }
   }
 
+  // Check if user exists in API and create if not
   useEffect(() => {
     async function checkUser() {
       try {
-
-        // Retrieve access token
+        // Get access token
         const response = await fetch('/api/returnAccessToken');
         const accessData = await response.json();
-        
+        console.log(user, accessData, user.name, user.email)
         // Call to API to check if user exists and create if not
-        const response2 = await fetch('http://api.localhost:8000/api/user',
+        const jsonObj = {
+          email: user.email,
+          name: user.name,
+        }
+        const response2 = await fetch('http://api.localhost:8000/create',
           {
             method: 'POST',
-            body: JSON.stringify({ user: user }),
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
               Authorization: `Bearer ${accessData.accessToken}`,
             },
+            body: JSON.stringify(jsonObj),
           }
         );
         const json = await response2.json();
         console.log(json);
 
       } catch (error) {
-        console.error(error);
+        console.error("CheckUser:" + error);
       }
     }
     checkUser();
