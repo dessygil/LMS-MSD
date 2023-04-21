@@ -20,5 +20,6 @@ from api.views import robots_txt
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("" , include('user.urls')),
+    path("main" , include('main.urls')),
     path('robots.txt', robots_txt)
 ]

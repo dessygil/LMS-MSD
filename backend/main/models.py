@@ -6,6 +6,8 @@ the connectors are meant to act as list to reference what machines are needed pe
 what samples a user has.
 """
 
+# Notes/Description will be needed
+# Ways of tracking data will be needed
 
 class Experiment(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -16,7 +18,7 @@ class Sample(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE, related_name='samples')
-    idle_time = models.DecimalField(max_digits=8, decimal_places=2)
+    idle_time = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     created_at = models.DateField()
 
 class Machine(models.Model):

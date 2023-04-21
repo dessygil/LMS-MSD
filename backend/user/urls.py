@@ -7,6 +7,5 @@ urlpatterns = [
     path('api/public', views.public),
     path('api/private', views.private),
     path('api/private-scoped', views.private_scoped),
-    path('api/user', views.check_or_create_user),
     path('create', views.create_user_view.as_view()),
 ]

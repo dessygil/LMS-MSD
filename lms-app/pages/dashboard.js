@@ -60,7 +60,6 @@ export default function Dashboard({ user }) {
         // Get access token
         const response = await fetch('/api/returnAccessToken');
         const accessData = await response.json();
-        console.log(user, accessData, user.name, user.email)
         // Call to API to check if user exists and create if not
         const jsonObj = {
           email: user.email,
@@ -77,8 +76,7 @@ export default function Dashboard({ user }) {
           }
         );
         const json = await response2.json();
-        console.log(json);
-
+        console.log("HTTP Status CheckUser() in lms-app/pages/dashboard = " + response2.status);
       } catch (error) {
         console.error("CheckUser:" + error);
       }

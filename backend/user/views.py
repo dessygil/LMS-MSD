@@ -62,7 +62,8 @@ class create_user_view(CreateAPIView):
     """
     Create a new user if it does not exist
     """
-
+    @api_view(['POST'])
+    @require_auth(None)
     def post(self, request, format=None):
         serializer = create_user_serializer(data=request.data)
         if serializer.is_valid():
@@ -79,27 +80,3 @@ class create_user_view(CreateAPIView):
                 return JsonResponse(serializer.validated_data, status=201)
         return JsonResponse(serializer.errors, status=400)
     
-    
-# user endpoints
-@api_view(['POST'])
-@require_auth(None)
-def check_or_create_user(request):
-    response = "Hello from a private endpoint! You need to be authenticated and have a scope of read:messages to see this."
-    return JsonResponse(dict(message=response))
-    
-    return Response(status=status.HTTP_201_CREATED)
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
-        email = serializer.validated_data.get('email')
-        name = serializer.validated_data.get('name')
-
-        try:
-            user = User.objects.get(email=email)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except User.DoesNotExist:
-            user = User.objects.create(name=name, email=email)
-
-        serializer = UserSerializer(user)
-        
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
