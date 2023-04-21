@@ -15,3 +15,7 @@ pytz
 
 # auth dependencies
 Authlib
+
+# testing dependencies
+pytest
+pytest-django
