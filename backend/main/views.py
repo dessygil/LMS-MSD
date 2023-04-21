@@ -10,21 +10,22 @@ from .serializers import sample_serializer, experiment_serializer, machine_seria
 #TODO needs more error checking
 #TODO needs more auth0
 
+
+
 class SampleViewSet(viewsets.ViewSet):
-    serializer_class = sample_serializer
-    
+    serializer = sample_serializer
+    queryset = Sample.objects.all()
     
     def list(self, request: Request):
         """Get all samples
         Args:
             request: Get request
         """
-        queryset = Sample.objects.all()
-        serializer = sample_serializer(queryset, many=True)
+        serializer = self.serializer(self.queryset, many=True)
         return JsonResponse(serializer.data, status=200)
 
     def create(self, request: Request, pk):
-        pass
+        
 
     def retrieve(self, request: Request, pk=None):
         """Retrieve a single sample
@@ -32,13 +33,12 @@ class SampleViewSet(viewsets.ViewSet):
             request: Get request
             pk: primary key of the sample
         """
-        queryset = Sample.objects.all()
-        sample = get_object_or_404(queryset, pk=pk)
-        serializer = sample_serializer(sample)
+        sample = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer(sample)
         return JsonResponse(serializer.data, status=200)
 
     def update(self, request: Request, pk=None):
-        p
+        pass
 
     def partial_update(self, request: Request, pk=None):
         pass
@@ -49,15 +49,15 @@ class SampleViewSet(viewsets.ViewSet):
     
 class ExperimentViewSet(viewsets.ViewSet):
     serializer_class = experiment_serializer
-    
+    queryset = Experiment.objects.all()
     
     def list(self, request: Request):
         """Get all experiments
         Args:
             request: Get request
         """
-        queryset = Experiment.objects.all()
-        serializer = experiment_serializer(queryset, many=True)
+        
+        serializer = self.serializer(self.queryset, many=True)
         return JsonResponse(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request: Request):
@@ -69,9 +69,8 @@ class ExperimentViewSet(viewsets.ViewSet):
             request: Get request
             pk: primary key of the experiment
         """
-        queryset = Experiment.objects.all()
-        experiment = get_object_or_404(queryset, pk=pk)
-        serializer = experiment_serializer(experiment)
+        experiment = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer(experiment)
         return JsonResponse(serializer.data, status=200)
         
 
@@ -86,18 +85,32 @@ class ExperimentViewSet(viewsets.ViewSet):
     
     
 class MachineViewSet(viewsets.ViewSet):
+    queryset = Machine.objects.all()
+    serializer = machine_serializer
     
     def list(self, request: Request):
         """Get all machines
         Args:
             request: Get request 
         """
-        queryset = Machine.objects.all()
-        serializer = machine_serializer(queryset, many=True)
+        serializer = self.serializer(self.queryset, many=True)
         return JsonResponse(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request: Request):
-        pass
+        """Create a new machine
+        Args:
+            request: Post request
+        """
+        
+        serializer = self.serializer(data=request.data)
+        if serializer.is_valid():
+            name = serializer.validated_data.get('name')
+            time_takes = serializer.validated_data.get('time_takes')
+            machine = Machine(name=name, time_takes=time_takes)
+            machine.save()
+            return JsonResponse(serializer.validated_data, status=201)
+        else:
+            return JsonResponse(serializer.errors, status=400)
 
     def retrieve(self, request: Request, pk=None):
         """Retrieve a single machine
@@ -105,18 +118,27 @@ class MachineViewSet(viewsets.ViewSet):
             request: Get request
             pk: primary key of the machine
         """
-        queryset = Machine.objects.all()
-        machine = get_object_or_404(queryset, pk=pk)
-        serializer = machine_serializer(machine)
+        machine = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer(machine)
         return JsonResponse(serializer.data, status=200)
 
     def update(self, request: Request, pk=None):
-        pass
-
-    def partial_update(self, request: Request, pk=None):
-        pass
+        """Update a machine
+        Args:
+            request: Put request
+            pk: primary key of the machine
+        """
+        experiment = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(experiment, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=200)
+        else:
+            return JsonResponse(serializer.errors, status=400)
 
     def destroy(self, request: Request, pk=None):
-        pass
+        machine = get_object_or_404(self.queryset, pk=pk)
+        machine.delete()
+        return JsonResponse(status=204)
     
     
