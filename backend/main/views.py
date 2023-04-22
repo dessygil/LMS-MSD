@@ -2,7 +2,9 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from rest_framework import viewsets, status
 from rest_framework.request import Request
+from django.db import transaction
 import os
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
 from .models import Sample, Experiment, Machine, UserSampleConnector, MachineExperimentConnector
 from .serializers import sample_serializer, experiment_serializer, machine_serializer, user_sample_connector_serializer, machine_experiment_connector_serializer
@@ -67,9 +69,48 @@ class ExperimentViewSet(viewsets.ViewSet):
         
         serializer = self.serializer(self.queryset, many=True)
         return JsonResponse(serializer.data, status=status.HTTP_200_OK)
-
+    
+    @transaction.atomic
     def create(self, request: Request):
-        pass
+        """Create a new experiment. The passed in machines should be an array. If it fails, since the
+        database is set up to cascade the experiment through the machineExperimentConnector, only the
+        experiment needs to be rolled back.
+        Args:
+            request: Post request
+        """
+        serializer = self.serializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                name = serializer.validated_data.get('name')
+                experiment = Experiment(name=name)
+                experiment.save()
+                new_experiment_id = experiment.id
+
+                # Use machine PK and create datasets within the experiMentmachineConnector
+                machines = serializer.validated_data.get('machines', [])
+                
+                # Check all machines exist
+                machine_ids = [machine for machine in machines if self.queryset.objects.filter(id=machine).exists()]
+                if len(machine_ids) != len(machines):
+                    return JsonResponse({"Error" : "One or more machines do not exist."} status=400)
+                
+                machine_experiment_connectors = [
+                    MachineExperimentConnector(experiment_id=new_experiment_id, machine_id=machine)
+                    for machine in machine_ids
+                ]
+                MachineExperimentConnector.objects.bulk_create(machine_experiment_connectors)
+                
+                # If experiment and all connectors are created, return the experiment
+                return JsonResponse(serializer.validated_data, status=201)
+            
+            # If any of the above fails, roll back the experiment creation
+            except ValidationError as e:
+                raise ValidationError(str(e))
+            except ObjectDoesNotExist as e:
+                raise ObjectDoesNotExist(str(e))
+        else:
+            return JsonResponse(serializer.errors, status=400)
+            
 
     def retrieve(self, request: Request, pk=None):
         """Retrieve a single experiment
@@ -225,63 +266,65 @@ class userSampleConnectorViewSet(viewsets.ViewSet):
         userSampleConnector.delete()
         return JsonResponse(status=204)
     
-class userExperimentConnectorViewSet(viewsets.ViewSet): 
+class MachineExperimentConnectorViewSet(viewsets.ViewSet):
+    queryset = MachineExperimentConnector.objects.all()
+    serializer = machine_experiment_connector_serializer
+    
     def list(self, request: Request):
-        """Get all userExperimentConnectors
+        """Get all machineExperimentConnectors
         Args:
             request: Get request 
         """
-        queryset = UserExperimentConnector.objects.all()
-        serializer = user_experiment_connector_serializer(queryset, many=True)
+        serializer = self.serializer(self.queryset, many=True)
         return JsonResponse(serializer.data, status=status.HTTP_200_OK)
-    
+
     def create(self, request: Request):
-        """Create a new userExperimentConnector
+        """Create a new machineExperimentConnector
         Args:
             request: Post request
         """
-        serializer = user_experiment_connector_serializer(data=request.data)
+        serializer = self.serializer(data=request.data)
         if serializer.is_valid():
-            user_id = serializer.validated_data.get('user_id')
+            machine_id = serializer.validated_data.get('machine_id')
             experiment_id = serializer.validated_data.get('experiment_id')
-            userExperimentConnector = UserExperimentConnector(user_id=user_id, experiment_id=experiment_id)
-            userExperimentConnector.save()
+            machineExperimentConnector = MachineExperimentConnector(machine_id=machine_id, experiment_id=experiment_id)
+            machineExperimentConnector.save()
             return JsonResponse(serializer.validated_data, status=201)
         else:
             return JsonResponse(serializer.errors, status=400)
-        
+
     def retrieve(self, request: Request, pk=None):
-        """Retrieve a single userExperimentConnector
+        """Retrieve a single machineExperimentConnector
         Args:
             request: Get request
-            pk: primary key of the userExperimentConnector
+            pk: primary key of the machineExperimentConnector
         """
-        userExperimentConnector = get_object_or_404(UserExperimentConnector, pk=pk)
-        serializer = user_experiment_connector_serializer(userExperimentConnector)
+        machineExperimentConnector = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer(machineExperimentConnector)
         return JsonResponse(serializer.data, status=200)
 
     def update(self, request: Request, pk=None):
-        """Update a userExperimentConnector
+        """Update a machineExperimentConnector
         Args:
             request: Put request
-            pk: primary key of the userExperimentConnector
+            pk: primary key of the machineExperimentConnector
         """
-        userExperimentConnector = get_object_or_404(UserExperimentConnector, pk=pk)
-        serializer = user_experiment_connector_serializer(userExperimentConnector, data=request.data)
+        machineExperimentConnector = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(machineExperimentConnector, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=200)
         else:
             return JsonResponse(serializer.errors, status=400)
-    
+
     def destroy(self, request: Request, pk=None):
-        """Delete a userExperimentConnector
+        """Delete a machineExperimentConnector
         Args:
             request: Delete request
-            pk: primary key of the userExperimentConnector
+            pk: primary key of the machineExperimentConnector
         """
-        userExperimentConnector = get_object_or_404(UserExperimentConnector, pk=pk)
-        userExperimentConnector.delete()
+        machineExperimentConnector = get_object_or_404(self.queryset, pk=pk)
+        machineExperimentConnector.delete()
         return JsonResponse(status=204)
     
     
