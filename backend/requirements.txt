@@ -19,3 +19,4 @@ Authlib
 # testing dependencies
 pytest
 pytest-django
+pytest-cov

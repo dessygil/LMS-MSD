@@ -1,17 +1,15 @@
 from rest_framework import serializers
 from .models import User
 
-#TODO might be able to delete this class below
-class user_serializer(serializers.Serializer):
+class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'name']
+        fields = ['name', 'email']
 
-class create_user_serializer(serializers.Serializer):
-    
-    name = serializers.CharField(required=True)
-    email = serializers.EmailField(required=True)
-    
+    def create(self, validated_data):
+        return User.objects.create(**validated_data)
+
+class MainUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'name']
+        fields = ['email']

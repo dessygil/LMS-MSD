@@ -12,6 +12,19 @@ from .serializers import sample_serializer, experiment_serializer, machine_seria
 #TODO needs more error checking
 #TODO needs more auth0
 
+from authlib.integrations.django_oauth2 import ResourceProtector
+from . import validator
+
+from dotenv import load_dotenv
+load_dotenv()
+
+require_auth = ResourceProtector()
+validator = validator.Auth0JWTBearerTokenValidator(
+    os.getenv('JWT_ISSUER'),
+    os.getenv('JWT_AUDIENCE')
+)
+require_auth.register_token_validator(validator)
+
 class SampleViewSet(viewsets.ViewSet):
     serializer = sample_serializer
     queryset = Sample.objects.all()
@@ -25,6 +38,11 @@ class SampleViewSet(viewsets.ViewSet):
         return JsonResponse(serializer.data, status=200)
 
     def create(self, request: Request, pk):
+        """Create a new sample
+        Args:
+            request: Post request
+            pk: primary key of the sample
+        """
         serializer = self.serializer(data=request.data)
         if serializer.is_valid():
             name = serializer.validated_data.get('name')
@@ -48,13 +66,28 @@ class SampleViewSet(viewsets.ViewSet):
         return JsonResponse(serializer.data, status=200)
 
     def update(self, request: Request, pk=None):
-        pass
-
-    def partial_update(self, request: Request, pk=None):
-        pass
+        """Update a single sample
+        Args:
+            request: Put request
+            pk: primary key of the sample
+        """
+        sample = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(sample, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=200)
+        else:
+            return JsonResponse(serializer.errors, status=400)
 
     def destroy(self, request: Request, pk=None):
-        pass
+        """Delete a single sample
+        Args:
+            request: Delete request
+            pk: primary key of the sample
+        """
+        sample = get_object_or_404(self.queryset, pk=pk)
+        sample.delete()
+        return JsonResponse({"message": "Sample deleted"}, status=204)
     
     
 class ExperimentViewSet(viewsets.ViewSet):
@@ -92,7 +125,7 @@ class ExperimentViewSet(viewsets.ViewSet):
                 # Check all machines exist
                 machine_ids = [machine for machine in machines if self.queryset.objects.filter(id=machine).exists()]
                 if len(machine_ids) != len(machines):
-                    return JsonResponse({"Error" : "One or more machines do not exist."} status=400)
+                    return JsonResponse({"Error" : "One or more machines do not exist."}, status=400)
                 
                 machine_experiment_connectors = [
                     MachineExperimentConnector(experiment_id=new_experiment_id, machine_id=machine)
@@ -124,13 +157,28 @@ class ExperimentViewSet(viewsets.ViewSet):
         
 
     def update(self, request: Request, pk=None):
-        pass
-
-    def partial_update(self, request: Request, pk=None):
-        pass
+        """Update a single experiment
+        Args:
+            request: Put request
+            pk: primary key of the experiment
+        """
+        experiment = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(experiment, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=200)
+        else:
+            return JsonResponse(serializer.errors, status=400)
 
     def destroy(self, request: Request, pk=None):
-        pass
+        """Delete a single experiment
+        Args:
+            request: Delete request
+            pk: primary key of the experiment
+        """
+        experiment = get_object_or_404(self.queryset, pk=pk)
+        experiment.delete()
+        return JsonResponse({"message": "Experiment deleted"}, status=204)
     
     
 class MachineViewSet(viewsets.ViewSet):
