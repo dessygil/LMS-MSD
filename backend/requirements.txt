@@ -5,6 +5,7 @@ django
 python-dotenv
 djangorestframework
 django-cors-headers
+requests
 
 # PlanetScale dependencies
 pymysql
@@ -20,3 +21,4 @@ Authlib
 pytest
 pytest-django
 pytest-cov
+validate_email

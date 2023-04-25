@@ -65,7 +65,7 @@ export default function Dashboard({ user }) {
           email: user.email,
           name: user.name,
         }
-        const response2 = await fetch('http://api.localhost:8000/create',
+        const response2 = await fetch('http://api.localhost:8000/create-user',
           {
             method: 'POST',
             headers: {
