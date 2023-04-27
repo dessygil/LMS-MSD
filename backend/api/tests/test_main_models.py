@@ -53,7 +53,6 @@ def test_user_reverse_relationship():
             'experiment': experiment.id,
             'user': user.email,
             'idle_time': 0,
-            'created_at': timezone.now().date()
         }
     sample_serializer = SampleSerializer(data=sample_data)
     if sample_serializer.is_valid():
@@ -76,5 +75,5 @@ def test_user_cascade_delete():
     experiment = Experiment.objects.create(name="Test Experiment", created_at=timezone.now().date())
     sample = Sample.objects.create(name="Test Sample", experiment=experiment, created_at=timezone.now().date())
     user.delete()
-    assert UserSampleConnector.objects.filter(user=user, sample=sample).count() == 0
+    assert UserSampleConnector.objects.all().count() == 0
     assert User.objects.all().count() == 0    

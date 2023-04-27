@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from django.utils import timezone
 from main.models import Experiment, Sample, Machine, MachineExperimentConnector, UserSampleConnector
 from user.models import User  
 
@@ -18,9 +17,10 @@ class ExperimentSerializer(serializers.ModelSerializer):
         write_only=True
     )
     name = serializers.CharField(max_length=255, required=True)
+    
     class Meta:
         model = Experiment
-        fields = ['id', 'name', 'created_at']
+        fields = ['id', 'name', 'created_at', 'machine_ids']
         
     def create(self, validated_data):
         machine_ids = validated_data.pop('machine_ids', [])
@@ -51,11 +51,10 @@ class SampleSerializer(serializers.ModelSerializer):
     experiment = serializers.PrimaryKeyRelatedField(queryset=Experiment.objects.all(), required=True)
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=True)
     name = serializers.CharField(max_length=255, required=True)
-    idle_time = serializers.IntegerField(required=True)
     
     class Meta:
         model = Sample
-        fields = ['id', 'name', 'experiment', 'idle_time', 'created_at', 'user']
+        fields = ['id', 'name', 'experiment', 'user']
 
     def create(self, validated_data):
         experiment = validated_data.pop('experiment')
@@ -65,7 +64,6 @@ class SampleSerializer(serializers.ModelSerializer):
         user_sample_connector_data = {
             'user': user.email,
             'sample': sample.id,
-            'created_at': timezone.now().date(),
         } 
         user_sample_connector_serializer = UserSampleConnectorSerializer(data=user_sample_connector_data)
         if user_sample_connector_serializer.is_valid():
@@ -90,11 +88,13 @@ class MachineSerializer(serializers.ModelSerializer):
         id: Primary key for the machine
         name: Name of the machine
         time_takes: Time it takes to run the machine in seconds
-        created_at: Date the machine was created
     """
+    name = serializers.CharField(max_length=255, required=True)
+    time_takes = serializers.IntegerField(required=True)
+    
     class Meta:
         model = Machine
-        fields = ['id', 'name', 'time_takes', 'created_at']
+        fields = ['id', 'name', 'time_takes']
     
     def create(self, validated_data):
         return Machine.objects.create(**validated_data)
@@ -120,7 +120,7 @@ class MachineExperimentConnectorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MachineExperimentConnector
-        fields = ['id', 'experiment', 'machine', 'created_at']
+        fields = ['id', 'experiment', 'machine']
 
     def create(self, validated_data):
         return MachineExperimentConnector.objects.create(**validated_data)
@@ -146,7 +146,7 @@ class UserSampleConnectorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserSampleConnector
-        fields = ['id', 'user', 'sample', 'created_at']
+        fields = ['id', 'user', 'sample']
 
     def create(self, validated_data):
         return UserSampleConnector.objects.create(**validated_data)
