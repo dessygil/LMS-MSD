@@ -98,7 +98,8 @@ WSGI_APPLICATION = "api.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# PlanetScale config
+#TODO change to MySQL
+# Test Database
 DATABASES = {
     'default': {
         "ENGINE": "django.db.backends.sqlite3",

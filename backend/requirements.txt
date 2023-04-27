@@ -17,8 +17,8 @@ pytz
 # auth dependencies
 Authlib
 
-# testing dependencies
+# testing/CI/CD dependencies
 pytest
 pytest-django
 pytest-cov
-validate_email
+tox

@@ -10,7 +10,6 @@ load_dotenv()
 @pytest.fixture(scope='module')
 def auth_token():
     
-
     url = 'https://dev-yisv67ey5uf648sg.us.auth0.com/oauth/token'
     headers = {'content-type': 'application/json'}
     data = {
