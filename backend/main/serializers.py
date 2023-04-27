@@ -22,8 +22,17 @@ class ExperimentSerializer(serializers.ModelSerializer):
         model = Experiment
         fields = ['id', 'name', 'created_at', 'machine_ids']
         
+    def validate_machine_ids(self, value):
+        if len(value) == 0:
+            raise serializers.ValidationError("You must provide at least one machine id")
+        return value
+    
     def create(self, validated_data):
         machine_ids = validated_data.pop('machine_ids', [])
+        
+        if len(machine_ids) == 0:
+            raise serializers.ValidationError("You must provide at least one machine id")
+        
         experiment = Experiment.objects.create(**validated_data)
         
         for machine_id in machine_ids:
@@ -51,10 +60,10 @@ class SampleSerializer(serializers.ModelSerializer):
     experiment = serializers.PrimaryKeyRelatedField(queryset=Experiment.objects.all(), required=True)
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=True)
     name = serializers.CharField(max_length=255, required=True)
-    
+    idle_time = serializers.IntegerField(required=False)
     class Meta:
         model = Sample
-        fields = ['id', 'name', 'experiment', 'user']
+        fields = ['id', 'name', 'experiment', 'user', 'idle_time']
 
     def create(self, validated_data):
         experiment = validated_data.pop('experiment')
