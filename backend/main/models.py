@@ -38,6 +38,7 @@ class Sample(models.Model):
     """
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE, related_name='samples')
     idle_time = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     created_at = models.DateField(default=timezone.now)

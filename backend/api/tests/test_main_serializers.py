@@ -71,11 +71,12 @@ def test_experiment_serializer_create_no_machine(user):
         serializer.is_valid(raise_exception=True)
 
 @pytest.mark.django_db
-def test_sample_serializer_create(user, experiment):
+def test_sample_serializer_create(experiment):
+    user = User.objects.create(email='test@example.com', name='Test User')
     sample_data = {
         "name": "Test Sample",
         "experiment": experiment.id,
-        "user": user.email,
+        "user": user.id,
     }
     serializer = SampleSerializer(data=sample_data)
     serializer.is_valid(raise_exception=True)
@@ -84,7 +85,6 @@ def test_sample_serializer_create(user, experiment):
     assert sample.name == sample_data["name"]
     assert sample.experiment == experiment
     assert sample.idle_time == 0
-    assert UserSampleConnector.objects.all().count() == 1
 
 @pytest.mark.django_db
 def test_machine_serializer_create():
@@ -115,7 +115,7 @@ def test_machine_experiment_connector_serializer_create(experiment, machine):
 @pytest.mark.django_db
 def test_user_sample_connector_serializer_create(user, sample):
     connector_data = {
-        "user": user.email,
+        "user": user.id,
         "sample": sample.id,
     }
     serializer = UserSampleConnectorSerializer(data=connector_data)
@@ -194,7 +194,7 @@ def test_user_sample_connector_serializer_update(user, sample):
     new_sample = Sample.objects.create(name="New Sample", experiment=sample.experiment)
     connector = UserSampleConnector.objects.create(user=user, sample=sample)
     connector_data = {
-        "user": new_user.email,
+        "user": new_user.id,
         "sample": new_sample.id,
     }
     serializer = UserSampleConnectorSerializer(connector, data=connector_data, partial=True)
@@ -214,13 +214,13 @@ def test_experiment_serializer_invalid_data(machine):
     serializer = ExperimentSerializer(data=invalid_experiment_data)
     with pytest.raises(ValidationError):
         serializer.is_valid(raise_exception=True)
-
+        
 @pytest.mark.django_db
 def test_sample_serializer_invalid_data(user, experiment):
     invalid_sample_data = {
         "name": "",
         "experiment": experiment.id,
-        "user": user.email,
+        "user": user.id,
     }
     serializer = SampleSerializer(data=invalid_sample_data)
     with pytest.raises(ValidationError):

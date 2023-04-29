@@ -68,18 +68,7 @@ class SampleSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         experiment = validated_data.pop('experiment')
         user = validated_data.pop('user')
-        sample = Sample.objects.create(experiment=experiment, **validated_data)
-
-        user_sample_connector_data = {
-            'user': user.email,
-            'sample': sample.id,
-        } 
-        user_sample_connector_serializer = UserSampleConnectorSerializer(data=user_sample_connector_data)
-        if user_sample_connector_serializer.is_valid():
-            user_sample_connector_serializer.save()
-        else:
-            print(user_sample_connector_serializer.errors)
-
+        sample = Sample.objects.create(experiment=experiment, user=user, **validated_data)
         return sample
 
     def update(self, instance, validated_data):

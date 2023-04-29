@@ -21,7 +21,7 @@ def auth_token():
     response = requests.post(url, headers=headers, data=json.dumps(data))
     response_data = response.json()
     access_token = response_data.get('access_token')
-    yield access_token
+    yield access_token 
 
 
 @pytest.mark.django_db
