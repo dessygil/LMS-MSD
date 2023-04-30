@@ -21,7 +21,7 @@ class Experiment(models.Model):
     """
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    created_at = models.DateField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
     
     def __str__(self):
         return self.name
@@ -41,7 +41,7 @@ class Sample(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE, related_name='samples')
     idle_time = models.DecimalField(max_digits=8, decimal_places=2, default=0)
-    created_at = models.DateField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name
@@ -59,7 +59,7 @@ class Machine(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
     time_takes = models.DecimalField(max_digits=8, decimal_places=2)
-    created_at = models.DateField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
     
     def __str__(self):
         return self.name
@@ -77,7 +77,7 @@ class MachineExperimentConnector(models.Model):
     id = models.BigAutoField(primary_key=True)
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE, related_name='machines')
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE, related_name='experiments')
-    created_at = models.DateField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
     
     def __str__(self):
         return self.experiment.name + " " + self.machine.name
@@ -94,7 +94,7 @@ class UserSampleConnector(models.Model):
     id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='samples')
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE, related_name='users')
-    created_at = models.DateField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
     
     def __str__(self):
         return self.user + " " + self.sample

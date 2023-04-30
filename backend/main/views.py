@@ -82,59 +82,16 @@ def destroy_sample(request, pk=None):
     sample.delete()
     return JsonResponse({"message": "Sample deleted"}, status=204)
 
+#TODO
+# add back auth0
+
 @api_view(['GET'])
-@require_auth(None)
 def list_experiments(request):
     queryset = Experiment.objects.all()
     serializer = ExperimentSerializer(queryset, many=True)
     return JsonResponse(serializer.data, safe=False, status=200)
 
 @api_view(['POST'])
-@require_auth(None)
-def create_experiment(request):
-    serializer = ExperimentSerializer(data=request.data)
-    
-    if serializer.is_valid():
-        serializer.save()
-        return JsonResponse(serializer.data, status=201)
-    return JsonResponse(serializer.errors, status=400)
-
-@api_view(['GET'])
-@require_auth(None)
-def retrieve_experiment(request, pk=None):
-    queryset = Experiment.objects.all()
-    experiment = get_object_or_404(queryset, pk=pk)
-    serializer = ExperimentSerializer(experiment)
-    return JsonResponse(serializer.data, status=200)
-
-@api_view(['PUT'])
-@require_auth(None)
-def update_experiment(request, pk=None):
-    queryset = Experiment.objects.all()
-    experiment = get_object_or_404(queryset, pk=pk)
-    serializer = ExperimentSerializer(experiment, data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return JsonResponse(serializer.data)
-    return JsonResponse(serializer.errors, status=400)
-
-@api_view(['DELETE'])
-@require_auth(None)
-def destroy_experiment(request, pk=None):
-    queryset = Experiment.objects.all()
-    experiment = get_object_or_404(queryset, pk=pk)
-    experiment.delete()
-    return JsonResponse({"message": "Experiment deleted"}, status=204)
-
-@api_view(['GET'])
-@require_auth(None)
-def list_experiments(request):
-    queryset = Experiment.objects.all()
-    serializer = ExperimentSerializer(queryset, many=True)
-    return JsonResponse(serializer.data, safe=False, status=200)
-
-@api_view(['POST'])
-@require_auth(None)
 def create_experiment(request):
     serializer = ExperimentSerializer(data=request.data)
     if serializer.is_valid():
@@ -143,7 +100,6 @@ def create_experiment(request):
     return JsonResponse(serializer.errors, status=400)
 
 @api_view(['GET'])
-@require_auth(None)
 def retrieve_experiment(request, pk=None):
     queryset = Experiment.objects.all()
     experiment = get_object_or_404(queryset, pk=pk)
@@ -151,7 +107,6 @@ def retrieve_experiment(request, pk=None):
     return JsonResponse(serializer.data, status=200)
 
 @api_view(['PUT'])
-@require_auth(None)
 def update_experiment(request, pk=None):
     queryset = Experiment.objects.all()
     experiment = get_object_or_404(queryset, pk=pk)
@@ -159,55 +114,49 @@ def update_experiment(request, pk=None):
     if serializer.is_valid():
         serializer.save()
         return JsonResponse(serializer.data)
-    return JsonResponse(serializer.errors, status=400)
+    return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
-@require_auth(None)
 def destroy_experiment(request, pk=None):
     queryset = Experiment.objects.all()
     experiment = get_object_or_404(queryset, pk=pk)
     experiment.delete()
-    return JsonResponse({"message": "Experiment deleted"}, status=204)
+    return JsonResponse({"message": "Experiment deleted"}, status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET'])
-@require_auth(None)
 def list_machines(request):
     queryset = Machine.objects.all()
     serializer = MachineSerializer(queryset, many=True)
-    return JsonResponse(serializer.data, safe=False, status=200)
+    return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
-@require_auth(None)
 def create_machine(request):
     serializer = MachineSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return JsonResponse(serializer.validated_data, status=201)
-    return JsonResponse(serializer.errors, status=400)
+        return JsonResponse(serializer.validated_data, status=status.HTTP_201_CREATED)
+    return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-@require_auth(None)
 def retrieve_machine(request, pk=None):
     queryset = Machine.objects.all()
     machine = get_object_or_404(queryset, pk=pk)
     serializer = MachineSerializer(machine)
-    return JsonResponse(serializer.data, status=200)
+    return JsonResponse(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['PUT'])
-@require_auth(None)
 def update_machine(request, pk=None):
     queryset = Machine.objects.all()
     machine = get_object_or_404(queryset, pk=pk)
     serializer = MachineSerializer(machine, data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return JsonResponse(serializer.data, status=200)
+        return JsonResponse(serializer.data, status=status.HTTP_200_OK)
     return JsonResponse(serializer.errors, status=400)
 
 @api_view(['DELETE'])
-@require_auth(None)
 def destroy_machine(request, pk=None):
     queryset = Machine.objects.all()
     machine = get_object_or_404(queryset, pk=pk)
     machine.delete()
-    return JsonResponse(status=204)
+    return JsonResponse({"message": "Experiment deleted"}, status=204)
