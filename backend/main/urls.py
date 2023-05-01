@@ -2,8 +2,12 @@ from django.urls import path
 from .views import (list_samples, create_sample, retrieve_sample, update_sample, destroy_sample,
                     list_experiments, create_experiment, retrieve_experiment, update_experiment, destroy_experiment,
                     list_machines, create_machine, retrieve_machine, update_machine, destroy_machine)
+from .views import test_endpoint
 
 urlpatterns = [
+    # Test endpoint
+    path('', test_endpoint, name='test-endpoint'),
+    
     # Sample views
     path('samples/', list_samples, name='sample-list'),
     path('samples/create/', create_sample, name='sample-create'),

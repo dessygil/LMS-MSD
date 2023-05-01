@@ -34,10 +34,16 @@ validator = validator.Auth0JWTBearerTokenValidator(
 )
 require_auth.register_token_validator(validator)
 
+@api_view(['GET'])
+def test_endpoint(request):
+    return JsonResponse({"message": "Hello World!"})
 
 @api_view(['GET'])
 @require_auth(None)
 def list_samples(request):
+    """_summary_
+
+    """
     queryset = Sample.objects.all()
     serializer = SampleSerializer(queryset, many=True)
     return JsonResponse(serializer.data, safe=False, status=200)
