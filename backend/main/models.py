@@ -8,6 +8,7 @@ from django.utils import timezone
 # created time and updated
 # different types of users eg lab manager vs research scientist
 # different labs biology vs chemistry vs materials focused
+# make sure all naming conventions are followed for this project
  
 
 class Experiment(models.Model):

@@ -53,6 +53,7 @@ class SampleSerializer(serializers.ModelSerializer):
     Fields:
         id: Primary key for the sample
         name: Name of the sample
+        user: Foreign key to the user
         experiment: Foreign key to the experiment
         idle_time: Time the sample is idle in seconds
         created_at: Date the sample was created
