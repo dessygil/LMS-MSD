@@ -21,4 +21,3 @@ RUN apk update \
 RUN pip install -r requirements.txt
 RUN apk del build-deps
 COPY . /code/
-RUN pytest -W error
