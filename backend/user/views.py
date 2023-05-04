@@ -13,16 +13,17 @@ from authlib.integrations.django_oauth2 import ResourceProtector
 from . import validator
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 require_auth = ResourceProtector()
 validator = validator.Auth0JWTBearerTokenValidator(
-    os.getenv('JWT_ISSUER'),
-    os.getenv('JWT_AUDIENCE')
+    os.getenv("JWT_ISSUER"), os.getenv("JWT_AUDIENCE")
 )
 require_auth.register_token_validator(validator)
 
-@api_view(['POST'])
+
+@api_view(["POST"])
 @require_auth(None)
 def create_user_view(request, *args, **kwargs):
     print(request.data, "You have reached the create_user_view")
@@ -30,11 +31,13 @@ def create_user_view(request, *args, **kwargs):
     try:
         serializer.is_valid(raise_exception=True)
     except ValidationError as e:
-        return Response({'error': "create_user_view " + str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    email = serializer.validated_data.get('email')
-    name = serializer.validated_data.get('name')
-    
+        return Response(
+            {"error": "create_user_view " + str(e)}, status=status.HTTP_400_BAD_REQUEST
+        )
+    email = serializer.validated_data.get("email")
+    name = serializer.validated_data.get("name")
+
     if User.objects.filter(email=email).exists():
-        return Response({'Success': 'User already exists'}, status=status.HTTP_200_OK)
+        return Response({"Success": "User already exists"}, status=status.HTTP_200_OK)
     User.objects.create(email=email, name=name)
-    return Response({'success': 'User created'}, status=status.HTTP_201_CREATED)
+    return Response({"success": "User created"}, status=status.HTTP_201_CREATED)

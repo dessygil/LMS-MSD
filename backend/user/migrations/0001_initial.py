@@ -7,16 +7,20 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='User',
+            name="User",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('email', models.EmailField(max_length=255, unique=True, verbose_name='Email Address')),
-                ('name', models.CharField(max_length=255)),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                (
+                    "email",
+                    models.EmailField(
+                        max_length=255, unique=True, verbose_name="Email Address"
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
             ],
         ),
     ]

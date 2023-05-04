@@ -1,8 +1,13 @@
 import pytest
-from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from main.models import Experiment, Sample, Machine, MachineExperimentConnector, UserSampleConnector
+from main.models import (
+    Experiment,
+    Sample,
+    Machine,
+    MachineExperimentConnector,
+    UserSampleConnector,
+)
 from user.models import User
 from main.serializers import (
     ExperimentSerializer,
@@ -12,17 +17,21 @@ from main.serializers import (
     UserSampleConnectorSerializer,
 )
 
+
 @pytest.fixture
 def user():
     return User.objects.create(email="test@example.com", name="testname")
+
 
 @pytest.fixture
 def experiment():
     return Experiment.objects.create(name="Test Experiment")
 
+
 @pytest.fixture
 def machine():
     return Machine.objects.create(name="Test Machine", time_takes=120)
+
 
 @pytest.fixture
 def machine_two():
@@ -30,9 +39,11 @@ def machine_two():
     machine_two = Machine.objects.create(name="Test Machine Two", time_takes=120)
     return [machine_one, machine_two]
 
+
 @pytest.fixture
 def sample(experiment, user):
     return Sample.objects.create(name="Test Sample", experiment=experiment)
+
 
 @pytest.mark.django_db
 def test_experiment_serializer_create(user, machine):
@@ -45,7 +56,10 @@ def test_experiment_serializer_create(user, machine):
     experiment = serializer.save()
 
     assert experiment.name == experiment_data["name"]
-    assert MachineExperimentConnector.objects.filter(experiment=experiment, machine=machine).exists()
+    assert MachineExperimentConnector.objects.filter(
+        experiment=experiment, machine=machine
+    ).exists()
+
 
 @pytest.mark.django_db
 def test_experiment_serializer_create_multiple_machines(user, machine_two):
@@ -60,6 +74,7 @@ def test_experiment_serializer_create_multiple_machines(user, machine_two):
     assert experiment.name == experiment_data["name"]
     assert MachineExperimentConnector.objects.all().count() == 2
 
+
 @pytest.mark.django_db
 def test_experiment_serializer_create_no_machine(user):
     experiment_data = {
@@ -67,12 +82,13 @@ def test_experiment_serializer_create_no_machine(user):
         "machine_ids": [],
     }
     serializer = ExperimentSerializer(data=experiment_data)
-    with pytest.raises(serializers.ValidationError) as exc_info:
+    with pytest.raises(serializers.ValidationError):
         serializer.is_valid(raise_exception=True)
+
 
 @pytest.mark.django_db
 def test_sample_serializer_create(experiment):
-    user = User.objects.create(email='test@example.com', name='Test User')
+    user = User.objects.create(email="test@example.com", name="Test User")
     sample_data = {
         "name": "Test Sample",
         "experiment": experiment.id,
@@ -85,6 +101,7 @@ def test_sample_serializer_create(experiment):
     assert sample.name == sample_data["name"]
     assert sample.experiment == experiment
     assert sample.idle_time == 0
+
 
 @pytest.mark.django_db
 def test_machine_serializer_create():
@@ -99,6 +116,7 @@ def test_machine_serializer_create():
     assert machine.name == machine_data["name"]
     assert machine.time_takes == machine_data["time_takes"]
 
+
 @pytest.mark.django_db
 def test_machine_experiment_connector_serializer_create(experiment, machine):
     connector_data = {
@@ -112,6 +130,7 @@ def test_machine_experiment_connector_serializer_create(experiment, machine):
     assert connector.experiment == experiment
     assert connector.machine == machine
 
+
 @pytest.mark.django_db
 def test_user_sample_connector_serializer_create(user, sample):
     connector_data = {
@@ -124,7 +143,8 @@ def test_user_sample_connector_serializer_create(user, sample):
 
     assert connector.user == user
     assert connector.sample == sample
-    
+
+
 @pytest.mark.django_db
 def test_experiment_serializer_update(experiment, machine):
     new_name = "Updated Experiment"
@@ -137,6 +157,7 @@ def test_experiment_serializer_update(experiment, machine):
 
     assert updated_experiment.name == new_name
     assert updated_experiment.created_at == experiment.created_at
+
 
 @pytest.mark.django_db
 def test_sample_serializer_update(sample, experiment):
@@ -155,6 +176,7 @@ def test_sample_serializer_update(sample, experiment):
     assert updated_sample.idle_time == new_idle_time
     assert updated_sample.created_at == sample.created_at
 
+
 @pytest.mark.django_db
 def test_machine_serializer_update(machine):
     new_name = "Updated Machine"
@@ -171,22 +193,28 @@ def test_machine_serializer_update(machine):
     assert updated_machine.time_takes == new_time_takes
     assert updated_machine.created_at == machine.created_at
 
+
 @pytest.mark.django_db
 def test_machine_experiment_connector_serializer_update(experiment, machine):
     new_experiment = Experiment.objects.create(name="New Experiment")
     new_machine = Machine.objects.create(name="New Machine", time_takes=100)
-    connector = MachineExperimentConnector.objects.create(experiment=experiment, machine=machine)
+    connector = MachineExperimentConnector.objects.create(
+        experiment=experiment, machine=machine
+    )
     connector_data = {
         "experiment": new_experiment.id,
         "machine": new_machine.id,
     }
-    serializer = MachineExperimentConnectorSerializer(connector, data=connector_data, partial=True)
+    serializer = MachineExperimentConnectorSerializer(
+        connector, data=connector_data, partial=True
+    )
     serializer.is_valid(raise_exception=True)
     updated_connector = serializer.save()
 
     assert updated_connector.experiment == new_experiment
     assert updated_connector.machine == new_machine
     assert updated_connector.created_at == connector.created_at
+
 
 @pytest.mark.django_db
 def test_user_sample_connector_serializer_update(user, sample):
@@ -197,13 +225,16 @@ def test_user_sample_connector_serializer_update(user, sample):
         "user": new_user.id,
         "sample": new_sample.id,
     }
-    serializer = UserSampleConnectorSerializer(connector, data=connector_data, partial=True)
+    serializer = UserSampleConnectorSerializer(
+        connector, data=connector_data, partial=True
+    )
     serializer.is_valid(raise_exception=True)
     updated_connector = serializer.save()
 
     assert updated_connector.user == new_user
     assert updated_connector.sample == new_sample
     assert updated_connector.created_at == connector.created_at
+
 
 @pytest.mark.django_db
 def test_experiment_serializer_invalid_data(machine):
@@ -214,7 +245,8 @@ def test_experiment_serializer_invalid_data(machine):
     serializer = ExperimentSerializer(data=invalid_experiment_data)
     with pytest.raises(ValidationError):
         serializer.is_valid(raise_exception=True)
-        
+
+
 @pytest.mark.django_db
 def test_sample_serializer_invalid_data(user, experiment):
     invalid_sample_data = {
@@ -226,6 +258,7 @@ def test_sample_serializer_invalid_data(user, experiment):
     with pytest.raises(ValidationError):
         serializer.is_valid(raise_exception=True)
 
+
 @pytest.mark.django_db
 def test_machine_serializer_invalid_data():
     invalid_machine_data = {
@@ -236,6 +269,7 @@ def test_machine_serializer_invalid_data():
     with pytest.raises(ValidationError):
         serializer.is_valid(raise_exception=True)
 
+
 @pytest.mark.django_db
 def test_machine_experiment_connector_serializer_invalid_data(experiment, machine):
     invalid_connector_data = {
@@ -245,6 +279,7 @@ def test_machine_experiment_connector_serializer_invalid_data(experiment, machin
     serializer = MachineExperimentConnectorSerializer(data=invalid_connector_data)
     with pytest.raises(ValidationError):
         serializer.is_valid(raise_exception=True)
+
 
 @pytest.mark.django_db
 def test_user_sample_connector_serializer_invalid_data(user, sample):

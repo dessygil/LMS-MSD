@@ -1,0 +1,29 @@
+# Standard dependencies
+asgiref
+backports.zoneinfo;python_version<"3.9"
+django
+python-dotenv
+djangorestframework
+django-cors-headers
+requests
+
+# PlanetScale dependencies
+pymysql
+django-mysql
+mysqlclient
+sqlparse
+pytz
+
+# auth dependencies
+Authlib
+
+# testing/CI/CD dependencies
+pytest
+pytest-django
+pytest-cov
+tox
+mypy
+django-stubs 
+types-requests
+flake8
+black

@@ -18,29 +18,32 @@ from main.serializers import (
 )
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
-@pytest.fixture(scope='module')
+
+@pytest.fixture(scope="module")
 def auth_token():
-    
-    url = 'https://dev-yisv67ey5uf648sg.us.auth0.com/oauth/token'
-    headers = {'content-type': 'application/json'}
+
+    url = "https://dev-yisv67ey5uf648sg.us.auth0.com/oauth/token"
+    headers = {"content-type": "application/json"}
     data = {
-        'client_id': os.getenv('AUTH0_CLIENT_ID'),
-        'client_secret': os.getenv('AUTH0_SECRET'),
-        'audience': os.getenv('AUTH0_AUDIENCE'),
-        'grant_type': 'client_credentials',
+        "client_id": os.getenv("AUTH0_CLIENT_ID"),
+        "client_secret": os.getenv("AUTH0_SECRET"),
+        "audience": os.getenv("AUTH0_AUDIENCE"),
+        "grant_type": "client_credentials",
     }
     response = requests.post(url, headers=headers, data=json.dumps(data))
     response_data = response.json()
-    access_token = response_data.get('access_token')
-    yield access_token 
+    access_token = response_data.get("access_token")
+    yield access_token
+
 
 @pytest.mark.django_db
 def test_list_samples(auth_token, client):
-    user = lmsUser.objects.create(email='testuser@gmail.com', name='testuser')
+    user = lmsUser.objects.create(email="testuser@gmail.com", name="testuser")
     assert lmsUser.objects.all().count() == 1
-    experiment = Experiment.objects.create(name='Test Experiment')
+    experiment = Experiment.objects.create(name="Test Experiment")
     sample_data = {
         "name": "Test Sample",
         "experiment": experiment.id,
@@ -49,11 +52,12 @@ def test_list_samples(auth_token, client):
     serializer = SampleSerializer(data=sample_data)
     serializer.is_valid(raise_exception=True)
     sample = serializer.save()
-    
-    headers = {'Authorization': f'Bearer {auth_token}'}
-    url = reverse('sample-list')
+
+    headers = {"Authorization": f"Bearer {auth_token}"}
+    url = reverse("sample-list")
     response = client.get(url, headers=headers)
     assert response.status_code == status.HTTP_200_OK
+
 
 """
 @pytest.mark.django_db
@@ -68,7 +72,7 @@ def test_create_sample(auth_token, client):
         'experiment': experiment.id,
         'user': user.id
     }
-    
+
     response = client.post(url, headers=headers, data=data)
     assert response.status_code == status.HTTP_201_CREATED
 
@@ -103,7 +107,7 @@ def test_update_sample(auth_token, client):
     serializer = SampleSerializer(data=sample_data)
     serializer.is_valid(raise_exception=True)
     sample = serializer.save()
-    
+
     headers = {'Authorization': f'Bearer {auth_token}'}
     url = reverse('sample-update', args=[sample.id])
     data = {
@@ -115,15 +119,18 @@ def test_update_sample(auth_token, client):
     response = client.put(url, headers=headers, data=data)
     assert response.status_code == status.HTTP_200_OK
 """
+
+
 @pytest.mark.django_db
 def test_destroy_sample(auth_token, client):
-    experiment = Experiment.objects.create(name='Test Experiment')
-    sample = Sample.objects.create(experiment=experiment, name='Test Sample')
-    headers = {'Authorization': f'Bearer {auth_token}'}
-    url = reverse('sample-destroy', args=[sample.id])
-    
+    experiment = Experiment.objects.create(name="Test Experiment")
+    sample = Sample.objects.create(experiment=experiment, name="Test Sample")
+    headers = {"Authorization": f"Bearer {auth_token}"}
+    url = reverse("sample-destroy", args=[sample.id])
+
     response = client.delete(url, headers=headers)
     assert response.status_code == status.HTTP_204_NO_CONTENT
+
 
 @pytest.mark.django_db
 def test_list_experiments():
@@ -131,8 +138,8 @@ def test_list_experiments():
 
     machine = Machine.objects.create(name="Machine 1", time_takes=10)
     experiment_data = {
-        'name': "Experiment 1",
-        'machine_ids': [machine.id],
+        "name": "Experiment 1",
+        "machine_ids": [machine.id],
     }
     experiment = ExperimentSerializer(data=experiment_data)
     experiment.is_valid(raise_exception=True)
@@ -142,6 +149,7 @@ def test_list_experiments():
     response = api_client.get(url)
     assert response.status_code == 200
 
+
 @pytest.mark.django_db
 def test_create_experiment():
     api_client = APIClient()
@@ -149,12 +157,10 @@ def test_create_experiment():
     machine = Machine.objects.create(name="Machine 1", time_takes=10)
 
     url = reverse("experiment-create")
-    data = {
-        "name": "New Experiment",
-        "machine_ids": [machine.id]
-    }
+    data = {"name": "New Experiment", "machine_ids": [machine.id]}
     response = api_client.post(url, data)
     assert response.status_code == 201
+
 
 @pytest.mark.django_db
 def test_retrieve_experiment():
@@ -162,8 +168,8 @@ def test_retrieve_experiment():
 
     machine = Machine.objects.create(name="Machine 1", time_takes=10)
     experiment_data = {
-        'name': "Experiment 1",
-        'machine_ids': [machine.id],
+        "name": "Experiment 1",
+        "machine_ids": [machine.id],
     }
     experiment = ExperimentSerializer(data=experiment_data)
     experiment.is_valid(raise_exception=True)
@@ -172,8 +178,9 @@ def test_retrieve_experiment():
 
     url = reverse("experiment-retrieve", kwargs={"pk": experiment_id})
     response = api_client.get(url)
-    
+
     assert response.status_code == 200
+
 
 @pytest.mark.django_db
 def test_update_experiment():
@@ -182,8 +189,8 @@ def test_update_experiment():
     machine = Machine.objects.create(name="Machine 1", time_takes=10)
     machine_two = Machine.objects.create(name="Machine 2", time_takes=10)
     experiment_data = {
-        'name': "Experiment 1",
-        'machine_ids': [machine.id],
+        "name": "Experiment 1",
+        "machine_ids": [machine.id],
     }
     experiment = ExperimentSerializer(data=experiment_data)
     experiment.is_valid(raise_exception=True)
@@ -191,13 +198,11 @@ def test_update_experiment():
     experiment_id = experiment.data.get("id")
 
     url = reverse("experiment-update", kwargs={"pk": experiment_id})
-    data = {
-        "name": "Updated Experiment",
-        "machine_ids": [machine_two.id]
-    }
+    data = {"name": "Updated Experiment", "machine_ids": [machine_two.id]}
     response = api_client.put(url, data)
 
     assert response.status_code == 200
+
 
 @pytest.mark.django_db
 def test_destroy_experiment():
@@ -205,8 +210,8 @@ def test_destroy_experiment():
 
     machine = Machine.objects.create(name="Machine 1", time_takes=10)
     experiment_data = {
-        'name': "Experiment 1",
-        'machine_ids': [machine.id],
+        "name": "Experiment 1",
+        "machine_ids": [machine.id],
     }
     experiment = ExperimentSerializer(data=experiment_data)
     experiment.is_valid(raise_exception=True)
@@ -218,10 +223,11 @@ def test_destroy_experiment():
     assert Experiment.objects.all().count() == 0
     assert response.status_code == 204
 
+
 @pytest.mark.django_db
 def test_list_machines():
     api_client = APIClient()
-    
+
     machine = Machine.objects.create(name="Machine1", time_takes=10)
     url = reverse("machine-list")
     response = api_client.get(url)
@@ -229,32 +235,37 @@ def test_list_machines():
     machines = Machine.objects.all()
     assert response.json() == MachineSerializer(machines, many=True).data
 
+
 @pytest.mark.django_db
 def test_create_machine():
     api_client = APIClient()
-    
+
     data = {"name": "Machine1", "time_takes": 10}
     url = reverse("machine-create")
     response = api_client.post(url, data)
     assert response.status_code == 201
     machine = Machine.objects.last()
+    if machine is None:
+        pytest.fail("No Machine objects found in the database")
     assert machine.name == data["name"]
     assert machine.time_takes == data["time_takes"]
+
 
 @pytest.mark.django_db
 def test_retrieve_machine():
     api_client = APIClient()
-    
+
     machine = Machine.objects.create(name="Machine1", time_takes=10)
     url = reverse("machine-retrieve", kwargs={"pk": machine.id})
     response = api_client.get(url)
     assert response.status_code == 200
     assert response.json() == MachineSerializer(machine).data
 
+
 @pytest.mark.django_db
 def test_update_machine():
     api_client = APIClient()
-    
+
     machine = Machine.objects.create(name="Machine1", time_takes=10)
     updated_data = {"name": "UpdatedMachine", "time_takes": 15}
     url = reverse("machine-update", kwargs={"pk": machine.id})
@@ -264,10 +275,11 @@ def test_update_machine():
     assert machine.name == updated_data["name"]
     assert machine.time_takes == updated_data["time_takes"]
 
+
 @pytest.mark.django_db
 def test_destroy_machine():
     api_client = APIClient()
-    
+
     machine = Machine.objects.create(name="Machine1", time_takes=10)
     url = reverse("machine-destroy", kwargs={"pk": machine.id})
     response = api_client.delete(url)
