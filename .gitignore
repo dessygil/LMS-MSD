@@ -222,3 +222,11 @@ bower_components
 psd
 thumb
 sketch
+
+# tox stuff:
+.tox/
+*.pyc
+*.pyo
+*.egg-info/
+.egg-info/
+dist/
