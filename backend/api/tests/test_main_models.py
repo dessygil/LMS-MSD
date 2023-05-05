@@ -5,7 +5,6 @@ from main.models import (
     Sample,
     Machine,
     MachineExperimentConnector,
-    UserSampleConnector,
 )
 from user.models import User
 
@@ -50,23 +49,6 @@ def test_machine_experiment_connector_model():
     )
     assert connector.experiment == experiment
     assert connector.machine == machine
-
-
-@pytest.mark.django_db
-def test_user_sample_connector_model():
-    user = User.objects.create(email="testuser@gmail.com", name="testname")
-    experiment = Experiment.objects.create(
-        name="Test Experiment", created_at=timezone.now()
-    )
-    sample = Sample.objects.create(
-        name="Test Sample", experiment=experiment, created_at=timezone.now()
-    )
-    user_sample_connector = UserSampleConnector.objects.create(
-        user=user, sample=sample, created_at=timezone.now()
-    )
-    assert user_sample_connector.user == user
-    assert user_sample_connector.sample == sample
-    assert UserSampleConnector.objects.all().count() == 1
 
 
 @pytest.mark.django_db

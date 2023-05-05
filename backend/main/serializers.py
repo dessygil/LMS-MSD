@@ -1,10 +1,10 @@
 from rest_framework import serializers
+import datetime
 from main.models import (
     Experiment,
     Sample,
     Machine,
     MachineExperimentConnector,
-    UserSampleConnector,
 )
 from user.models import User
 
@@ -15,7 +15,6 @@ class ExperimentSerializer(serializers.ModelSerializer):
     Fields:
         id: Primary key for the experiment
         name: Name of the experiment
-        created_at: Date the experiment was created
         machine_ids: List of machine ids to be used in the experiment
     """
 
@@ -55,7 +54,7 @@ class ExperimentSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
-        instance.created_at = validated_data.get("created_at", instance.created_at)
+        instance.updated_at = datetime.datetime.now()
         instance.save()
         return instance
 
@@ -69,7 +68,6 @@ class SampleSerializer(serializers.ModelSerializer):
         user: Foreign key to the user
         experiment: Foreign key to the experiment
         idle_time: Time the sample is idle in seconds
-        created_at: Date the sample was created
     """
 
     experiment = serializers.PrimaryKeyRelatedField(
@@ -95,9 +93,13 @@ class SampleSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
-        instance.experiment = validated_data.get("experiment", instance.experiment)
-        instance.idle_time = validated_data.get("idle_time", instance.idle_time)
-        instance.created_at = validated_data.get("created_at", instance.created_at)
+        instance.experiment = validated_data.get(
+            "experiment", instance.experiment
+        )
+        instance.idle_time = validated_data.get(
+            "idle_time", instance.idle_time
+        )
+        instance.updated_at = datetime.datetime.now()
         instance.save()
         return instance
 
@@ -124,7 +126,7 @@ class MachineSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
         instance.time_takes = validated_data.get("time_takes", instance.time_takes)
-        instance.created_at = validated_data.get("created_at", instance.created_at)
+        instance.updated_at = datetime.datetime.now()
         instance.save()
         return instance
 
@@ -152,38 +154,6 @@ class MachineExperimentConnectorSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.experiment = validated_data.get("experiment", instance.experiment)
         instance.machine = validated_data.get("machine", instance.machine)
-        instance.created_at = validated_data.get("created_at", instance.created_at)
-        instance.save()
-        return instance
-
-
-class UserSampleConnectorSerializer(serializers.ModelSerializer):
-    """Serializer for the user sample connector object
-
-    Fields:
-        id: Primary key for the user sample connector
-        user: Foreign key to the user
-        sample: Foreign key to the sample
-        created_at: Date the user sample connector was created
-    """
-
-    user = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(), required=True
-    )
-    sample = serializers.PrimaryKeyRelatedField(
-        queryset=Sample.objects.all(), required=True
-    )
-
-    class Meta:
-        model = UserSampleConnector
-        fields = ["id", "user", "sample"]
-
-    def create(self, validated_data):
-        return UserSampleConnector.objects.create(**validated_data)
-
-    def update(self, instance, validated_data):
-        instance.user = validated_data.get("user", instance.user)
-        instance.sample = validated_data.get("sample", instance.sample)
-        instance.created_at = validated_data.get("created_at", instance.created_at)
+        instance.updated_at = datetime.datetime.now()
         instance.save()
         return instance

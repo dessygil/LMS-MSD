@@ -24,6 +24,7 @@ class Experiment(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
     created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name
@@ -54,6 +55,7 @@ class Sample(models.Model):
     created_at = models.DateTimeField(
         default=timezone.now
     )
+    updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name
@@ -73,6 +75,7 @@ class Machine(models.Model):
     name = models.CharField(max_length=255)
     time_takes = models.DecimalField(max_digits=8, decimal_places=2)
     created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name
@@ -97,29 +100,7 @@ class MachineExperimentConnector(models.Model):
         Machine, on_delete=models.CASCADE, related_name="experiments"
     )
     created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.experiment.name + " " + self.machine.name
-
-
-class UserSampleConnector(models.Model):
-    """Connects the user to the sample. Each user will have multiple samples.
-
-    Fields:
-        id: Primary key for the connector
-        user: Foreign key to the user
-        sample: Foreign key to the sample
-        created_at: Date the connector was created
-    """
-
-    id = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="samples"
-    )
-    sample = models.ForeignKey(
-        Sample, on_delete=models.CASCADE, related_name="users"
-    )
-    created_at = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return str(self.user) + " " + str(self.sample)
