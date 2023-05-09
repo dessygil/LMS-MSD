@@ -23,28 +23,35 @@ def user():
 
 @pytest.fixture
 def experiment():
-    return Experiment.objects.create(name="Test Experiment")
+    return Experiment.objects.create(name="Test Experiment", )
 
 
 @pytest.fixture
 def machine():
-    return Machine.objects.create(name="Test Machine", time_takes=120)
+    return Machine.objects.create(
+        name="Test Machine", time_takes=120, 
+        model_number="Test Model", manufacturer="Test Manufacturer"
+        )
 
 
 @pytest.fixture
 def machine_two():
     machine_one = Machine.objects.create(
-        name="Test Machine One", time_takes=120
+        name="Test Machine One", time_takes=120, 
+        model_number="Test Model", manufacturer="Test Manufacturer"
     )
     machine_two = Machine.objects.create(
-        name="Test Machine Two", time_takes=120
+        name="Test Machine Two", time_takes=120, 
+        model_number="Test Model", manufacturer="Test Manufacturer"
     )
     return [machine_one, machine_two]
 
 
 @pytest.fixture
 def sample(experiment, user):
-    return Sample.objects.create(name="Test Sample", experiment=experiment)
+    return Sample.objects.create(
+        name="Test Sample", experiment=experiment, user=user
+    )
 
 
 @pytest.mark.django_db
@@ -110,6 +117,8 @@ def test_machine_serializer_create():
     machine_data = {
         "name": "Test Machine",
         "time_takes": 120,
+        "model_number": "Test Model",
+        "manufacturer": "Test Manufacturer",
     }
     serializer = MachineSerializer(data=machine_data)
     serializer.is_valid(raise_exception=True)

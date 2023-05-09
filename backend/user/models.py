@@ -9,3 +9,4 @@ class User(models.Model):
     name = models.CharField(
         max_length=255, null=False, blank=False
     )
+    lab_manager = models.BooleanField(default=False)

@@ -16,16 +16,20 @@ class ExperimentSerializer(serializers.ModelSerializer):
         id: Primary key for the experiment
         name: Name of the experiment
         machine_ids: List of machine ids to be used in the experiment
+        notes: Notes about the experiment
     """
 
     machine_ids = serializers.ListField(
         child=serializers.IntegerField(), required=True, write_only=True
     )
     name = serializers.CharField(max_length=255, required=True)
+    notes = serializers.CharField(
+        max_length=255, allow_blank=True, required=False
+    )
 
     class Meta:
         model = Experiment
-        fields = ["id", "name", "created_at", "machine_ids"]
+        fields = ["id", "name", "created_at", "machine_ids", "notes"]
 
     def validate_machine_ids(self, value):
         if len(value) == 0:
@@ -55,6 +59,7 @@ class ExperimentSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
         instance.updated_at = datetime.datetime.now()
+        instance.notes = validated_data.get("notes", instance.notes)
         instance.save()
         return instance
 
@@ -68,6 +73,7 @@ class SampleSerializer(serializers.ModelSerializer):
         user: Foreign key to the user
         experiment: Foreign key to the experiment
         idle_time: Time the sample is idle in seconds
+        notes: Notes about the sample
     """
 
     experiment = serializers.PrimaryKeyRelatedField(
@@ -78,10 +84,13 @@ class SampleSerializer(serializers.ModelSerializer):
     )
     name = serializers.CharField(max_length=255, required=True)
     idle_time = serializers.IntegerField(required=False)
+    notes = serializers.CharField(
+        max_length=255, allow_blank=True, required=False
+    )
 
     class Meta:
         model = Sample
-        fields = ["id", "name", "experiment", "user", "idle_time"]
+        fields = ["id", "name", "experiment", "user", "idle_time", "notes"]
 
     def create(self, validated_data):
         experiment = validated_data.pop("experiment")
@@ -100,6 +109,7 @@ class SampleSerializer(serializers.ModelSerializer):
             "idle_time", instance.idle_time
         )
         instance.updated_at = datetime.datetime.now()
+        instance.notes = validated_data.get("notes", instance.notes)
         instance.save()
         return instance
 
@@ -111,22 +121,35 @@ class MachineSerializer(serializers.ModelSerializer):
         id: Primary key for the machine
         name: Name of the machine
         time_takes: Time it takes to run the machine in seconds
+        model_number: Foreign key to the model
+        manufacturer: Foreign key to the manufacturer
+        notes: Notes about the machine
     """
 
     name = serializers.CharField(max_length=255, required=True)
     time_takes = serializers.IntegerField(required=True)
+    model_number = serializers.CharField(max_length=255, required=True)
+    manufacturer = serializers.CharField(max_length=255, required=True)
+    notes = serializers.CharField(
+        max_length=255, allow_blank=True, required=False
+    )
 
     class Meta:
         model = Machine
-        fields = ["id", "name", "time_takes"]
+        fields = ["id", "name", "time_takes", "model_number", "manufacturer", "notes"]
 
     def create(self, validated_data):
         return Machine.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
-        instance.time_takes = validated_data.get("time_takes", instance.time_takes)
+        instance.time_takes = validated_data.get(
+            "time_takes", instance.time_takes
+        )
         instance.updated_at = datetime.datetime.now()
+        instance.model_number = validated_data.get("model_number", instance.model_number)
+        instance.manufacturer = validated_data.get("manufacturer", instance.manufacturer)
+        instance.notes = validated_data.get("notes", instance.notes)
         instance.save()
         return instance
 
