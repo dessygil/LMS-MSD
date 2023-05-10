@@ -214,7 +214,7 @@ def create_machine(request):
     """
     serializer = MachineSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
+        serializer.save() 
         return JsonResponse(serializer.validated_data,
                             status=status.HTTP_201_CREATED)
     return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
