@@ -7,31 +7,31 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0003_auto_20230430_0016'),
+        ("main", "0003_auto_20230430_0016"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='experiment',
-            name='updated_at',
+            model_name="experiment",
+            name="updated_at",
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
         migrations.AddField(
-            model_name='machine',
-            name='updated_at',
+            model_name="machine",
+            name="updated_at",
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
         migrations.AddField(
-            model_name='machineexperimentconnector',
-            name='updated_at',
+            model_name="machineexperimentconnector",
+            name="updated_at",
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
         migrations.AddField(
-            model_name='sample',
-            name='updated_at',
+            model_name="sample",
+            name="updated_at",
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
         migrations.DeleteModel(
-            name='UserSampleConnector',
+            name="UserSampleConnector",
         ),
     ]

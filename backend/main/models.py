@@ -44,15 +44,11 @@ class Sample(models.Model):
 
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, null=True, blank=True
-    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     experiment = models.ForeignKey(
         Experiment, on_delete=models.CASCADE, related_name="samples"
     )
-    idle_time = models.DecimalField(
-        max_digits=8, decimal_places=2, default=0
-    )
+    idle_time = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     notes = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)

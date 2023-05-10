@@ -80,8 +80,7 @@ def retrieve_sample(request, pk=None):
         serializer = SampleSerializer(sample)
         return JsonResponse(serializer.data, status=status.HTTP_200_OK)
     except Sample.DoesNotExist:
-        return JsonResponse(serializer.errors,
-                            status=status.HTTP_404_NOT_FOUND)
+        return JsonResponse(serializer.errors, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(["PUT"])
@@ -101,11 +100,9 @@ def update_sample(request, pk=None):
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors,
-                            status=status.http_400_bad_request)
+        return JsonResponse(serializer.errors, status=status.http_400_bad_request)
     except Sample.DoesNotExist:
-        return JsonResponse(serializer.errors,
-                            status=status.http_404_not_found)
+        return JsonResponse(serializer.errors, status=status.http_404_not_found)
 
 
 @api_view(["DELETE"])
@@ -119,8 +116,9 @@ def destroy_sample(request, pk=None):
     queryset = Sample.objects.all()
     sample = get_object_or_404(queryset, pk=pk)
     sample.delete()
-    return JsonResponse({"message": "Sample deleted"},
-                        status=status.HTTP_204_NO_CONTENT)
+    return JsonResponse(
+        {"message": "Sample deleted"}, status=status.HTTP_204_NO_CONTENT
+    )
 
 
 # TODO
@@ -214,9 +212,8 @@ def create_machine(request):
     """
     serializer = MachineSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save() 
-        return JsonResponse(serializer.validated_data,
-                            status=status.HTTP_201_CREATED)
+        serializer.save()
+        return JsonResponse(serializer.validated_data, status=status.HTTP_201_CREATED)
     return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -260,4 +257,6 @@ def destroy_machine(request, pk=None):
     queryset = Machine.objects.all()
     machine = get_object_or_404(queryset, pk=pk)
     machine.delete()
-    return JsonResponse({"message": "Experiment deleted"}, status=status.HTTP_204_NO_CONTENT)
+    return JsonResponse(
+        {"message": "Experiment deleted"}, status=status.HTTP_204_NO_CONTENT
+    )

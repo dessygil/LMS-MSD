@@ -23,9 +23,7 @@ class ExperimentSerializer(serializers.ModelSerializer):
         child=serializers.IntegerField(), required=True, write_only=True
     )
     name = serializers.CharField(max_length=255, required=True)
-    notes = serializers.CharField(
-        max_length=255, allow_blank=True, required=False
-    )
+    notes = serializers.CharField(max_length=255, allow_blank=True, required=False)
 
     class Meta:
         model = Experiment
@@ -84,9 +82,7 @@ class SampleSerializer(serializers.ModelSerializer):
     )
     name = serializers.CharField(max_length=255, required=True)
     idle_time = serializers.IntegerField(required=False)
-    notes = serializers.CharField(
-        max_length=255, allow_blank=True, required=False
-    )
+    notes = serializers.CharField(max_length=255, allow_blank=True, required=False)
 
     class Meta:
         model = Sample
@@ -102,12 +98,8 @@ class SampleSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
-        instance.experiment = validated_data.get(
-            "experiment", instance.experiment
-        )
-        instance.idle_time = validated_data.get(
-            "idle_time", instance.idle_time
-        )
+        instance.experiment = validated_data.get("experiment", instance.experiment)
+        instance.idle_time = validated_data.get("idle_time", instance.idle_time)
         instance.updated_at = datetime.datetime.now()
         instance.notes = validated_data.get("notes", instance.notes)
         instance.save()
@@ -130,9 +122,7 @@ class MachineSerializer(serializers.ModelSerializer):
     time_takes = serializers.IntegerField(required=True)
     model_number = serializers.CharField(max_length=255, required=True)
     manufacturer = serializers.CharField(max_length=255, required=True)
-    notes = serializers.CharField(
-        max_length=255, allow_blank=True, required=False
-    )
+    notes = serializers.CharField(max_length=255, allow_blank=True, required=False)
 
     class Meta:
         model = Machine
@@ -143,12 +133,14 @@ class MachineSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
-        instance.time_takes = validated_data.get(
-            "time_takes", instance.time_takes
-        )
+        instance.time_takes = validated_data.get("time_takes", instance.time_takes)
         instance.updated_at = datetime.datetime.now()
-        instance.model_number = validated_data.get("model_number", instance.model_number)
-        instance.manufacturer = validated_data.get("manufacturer", instance.manufacturer)
+        instance.model_number = validated_data.get(
+            "model_number", instance.model_number
+        )
+        instance.manufacturer = validated_data.get(
+            "manufacturer", instance.manufacturer
+        )
         instance.notes = validated_data.get("notes", instance.notes)
         instance.save()
         return instance

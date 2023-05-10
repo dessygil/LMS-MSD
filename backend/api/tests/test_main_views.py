@@ -241,7 +241,8 @@ def test_create_machine():
     api_client = APIClient()
 
     data = {
-        "name": "Machine1", "time_takes": 10,
+        "name": "Machine1",
+        "time_takes": 10,
         "manufacturer": "Test Manufacturer",
         "model_number": "Test Model Number",
     }
@@ -271,17 +272,19 @@ def test_update_machine():
     api_client = APIClient()
 
     data = {
-        "name": "Machine1", "time_takes": 10, 
+        "name": "Machine1",
+        "time_takes": 10,
         "manufacturer": "Test Manufacturer",
-        "model_number": "Test Model Number"
+        "model_number": "Test Model Number",
     }
-    
+
     machine = Machine.objects.create(**data)
-    
+
     updated_data = {
-        "name": "UpdatedMachine", "time_takes": 15,
+        "name": "UpdatedMachine",
+        "time_takes": 15,
         "manufacturer": "Test Manufacturer",
-        "model_number": "Test Model Number"
+        "model_number": "Test Model Number",
     }
     url = reverse("machine-update", kwargs={"pk": machine.id})
     response = api_client.put(url, updated_data)

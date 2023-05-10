@@ -6,33 +6,33 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0004_auto_20230504_2248'),
+        ("main", "0004_auto_20230504_2248"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='experiment',
-            name='notes',
+            model_name="experiment",
+            name="notes",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='machine',
-            name='manufacturer',
-            field=models.CharField(default='Unknown', max_length=255),
+            model_name="machine",
+            name="manufacturer",
+            field=models.CharField(default="Unknown", max_length=255),
         ),
         migrations.AddField(
-            model_name='machine',
-            name='model_number',
-            field=models.CharField(default='Unknown', max_length=255),
+            model_name="machine",
+            name="model_number",
+            field=models.CharField(default="Unknown", max_length=255),
         ),
         migrations.AddField(
-            model_name='machine',
-            name='notes',
+            model_name="machine",
+            name="notes",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='sample',
-            name='notes',
+            model_name="sample",
+            name="notes",
             field=models.TextField(blank=True, null=True),
         ),
     ]
