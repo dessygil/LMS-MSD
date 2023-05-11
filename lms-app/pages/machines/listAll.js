@@ -1,11 +1,10 @@
 // MachineList.js
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 const MachineList = () => {
   const [machines, setMachines] = useState([]);
 
-
-    //TODO 
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch('http://api.localhost:8000/main/machines/');
@@ -32,14 +31,19 @@ const MachineList = () => {
         </thead>
         <tbody>
           {machines.map((machine) => (
-            <tr key={machine.id}>
-              <td>{machine.id}</td>
-              <td>{machine.name}</td>
-              <td>{machine.model_number}</td>
-              <td>{machine.manufacturer}</td>
-              <td>{machine.time_takes}</td>
-              <td>{machine.notes}</td>
-                
+              <tr key={machine.id}>
+                    
+                  <td>
+                  <Link href={`/machines/${machine.id}`}>
+                          {machine.id}
+                      </Link>
+                  </td>
+                <td>{machine.name}</td>
+                <td>{machine.model_number}</td>
+                <td>{machine.manufacturer}</td>
+                <td>{machine.time_takes}</td>
+                <td>{machine.notes}</td>
+                    
             </tr>
           ))}
         </tbody>
