@@ -1,6 +1,6 @@
 import React from 'react';
 
-const listAll = () => {
+const ListAll = () => {
     return (
         <div>
             <h1>About Page</h1>
@@ -8,4 +8,4 @@ const listAll = () => {
     );
 };
 
-export default listAll;
+export default ListAll;

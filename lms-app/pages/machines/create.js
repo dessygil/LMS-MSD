@@ -2,7 +2,7 @@ import React, {
     useState
 } from 'react';
 
-const create = () => {
+const Create = () => {
     const [name, setName] = useState('');
     const [modelNumber, setModelNumber] = useState('');
     const [manufacturer, setManufacturer] = useState('');
@@ -66,4 +66,4 @@ const create = () => {
 }
 
 
-export default create;
+export default Create;

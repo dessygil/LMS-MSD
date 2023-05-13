@@ -1,6 +1,6 @@
 import React from 'react';
 
-const list = () => {
+const List = () => {
     return (
         <div>
             <h1>About Page</h1>
@@ -8,4 +8,4 @@ const list = () => {
     );
 };
 
-export default list;
+export default List;

@@ -8,7 +8,10 @@ on:
 
 jobs:
   test:
-    runs-on: [ubuntu-latest, macos-latest, windows-latest]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v2
@@ -22,11 +25,9 @@ jobs:
       run: npm ci
       working-directory: ../../lms-app
 
-
     - name: Run Jest
       run: npm test
       working-directory: ../../lms-app
-
 
     - name: Run Linting
       run: npm run lint
