@@ -1,4 +1,4 @@
-name: Tests
+name: CICDPy
 on: [push, pull_request]
 jobs:
   tests:
