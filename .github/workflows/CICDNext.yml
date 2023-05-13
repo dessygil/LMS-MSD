@@ -29,5 +29,5 @@ jobs:
 
 
     - name: Run Linting
-    run: npm run lint
-    working-directory: ../../lms-app
+      run: npm run lint
+      working-directory: ../../lms-app
