@@ -18,14 +18,14 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16.x
-      - name: npm ci, build and test
+      - name: npm ci
         working-directory: lms-app
         run: |
           npm ci
           
       - name: Run Jest
         working-directory: lms-app
-        run: npm test
+        run: npm run test:ci
     
       - name: Run Linting
         working-directory: lms-app
