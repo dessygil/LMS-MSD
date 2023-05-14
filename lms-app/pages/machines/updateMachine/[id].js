@@ -6,7 +6,7 @@ const UpdateMachine = () => {
   const [name, setName] = useState('');
   const [modelNumber, setModelNumber] = useState('');
   const [manufacturer, setManufacturer] = useState('');
-  const [timeTakes, setTimeTakes] = useState('');
+  const [duration, setDuration] = useState('');
   const [notes, setNotes] = useState('');
   
   const router = useRouter();
@@ -20,7 +20,7 @@ const UpdateMachine = () => {
         setName(machine.name);
         setModelNumber(machine.model_number);
         setManufacturer(machine.manufacturer);
-        setTimeTakes(machine.time_takes);
+        setDuration(machine.duration);
         setNotes(machine.notes);
       } catch (error) {
         console.error('Error fetching machine:', error);
@@ -39,7 +39,7 @@ const UpdateMachine = () => {
         name: name,
         model_number: modelNumber,
         manufacturer: manufacturer,
-        time_takes: timeTakes,
+        duration: duration,
         notes: notes,
       });
       router.push(`/machines/${id}`);  // Redirect to machine detail page after update
@@ -66,7 +66,7 @@ const UpdateMachine = () => {
         </label>
         <label>
           Time Takes:
-          <input type="text" value={timeTakes} onChange={e => setTimeTakes(e.target.value)} />
+          <input type="text" value={duration} onChange={e => setDuration(e.target.value)} />
         </label>
         <label>
           Notes:

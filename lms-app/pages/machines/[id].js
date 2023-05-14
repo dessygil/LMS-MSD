@@ -51,7 +51,7 @@ const Machine = () => {
                 <p>ID: {machine.id}</p>
                 <p>Model Number: {machine.model_number}</p>
                 <p>Manufacturer: {machine.manufacturer}</p>
-                <p>Time Takes: {machine.time_takes}</p>
+                <p>duration: {machine.duration}</p>
                 <p>Notes: {machine.notes}</p>
             </div>
             <button onClick={handleUpdate}>Update</button>

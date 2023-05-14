@@ -41,7 +41,7 @@ const MachineList = () => {
                 <td>{machine.name}</td>
                 <td>{machine.model_number}</td>
                 <td>{machine.manufacturer}</td>
-                <td>{machine.time_takes}</td>
+                <td>{machine.duration}</td>
                 <td>{machine.notes}</td>
                     
             </tr>

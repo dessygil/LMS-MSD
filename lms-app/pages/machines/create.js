@@ -6,7 +6,7 @@ const Create = () => {
     const [name, setName] = useState('');
     const [modelNumber, setModelNumber] = useState('');
     const [manufacturer, setManufacturer] = useState('');
-    const [timeTakes, setTimeTakes] = useState('');
+    const [duration, setDuration] = useState('');
     const [notes, setNotes] = useState('');
 
     const handleSubmit = async (e) => {
@@ -21,7 +21,7 @@ const Create = () => {
                 name: name,
                 model_number: modelNumber,
                 manufacturer: manufacturer,
-                time_takes: timeTakes,
+                duration: duration,
                 notes: notes,
             }),
         });
@@ -49,7 +49,7 @@ const Create = () => {
                 <input type="text" id="Manufacturer" name="Manufacturer" placeholder="Enter the manufacturer" onChange={(e) => setManufacturer(e.target.value)}></input>
 
                 <label for="Time">Time:</label>
-                <input type="number" id="Time" name="Time" min="1" max="10000" step="1" onChange={(e) => setTimeTakes(e.target.value)}></input>
+                <input type="number" id="Time" name="Time" min="1" max="10000" step="1" onChange={(e) => setDuration(e.target.value)}></input>
 
                 <label for="notes">Notes:</label>
                 <textarea id="notes" name="notes" rows="4" cols="40" onChange={(e) => setNotes(e.target.value)}></textarea>
