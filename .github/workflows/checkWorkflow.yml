@@ -20,4 +20,4 @@ jobs:
 
     - name: Display Folder
       run: |
-        echo "Workflow Folder: ${{ github.workspace }}"
+        pwd
