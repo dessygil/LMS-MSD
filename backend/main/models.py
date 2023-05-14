@@ -6,6 +6,8 @@ from django.utils import timezone
 # Ways of tracking data eg logs??
 # different labs biology vs chemistry vs materials focused
 # make sure all naming conventions are followed for this project
+# time_takes should be called duration
+# the duration should be variable for the machine based on the experiment
 
 
 class Experiment(models.Model):
