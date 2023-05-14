@@ -17,7 +17,5 @@ jobs:
 
     - name: Navigate to Folder
       run: cd lms-app
-
-    - name: Display Folder
-      run: |
-        pwd
+      run: pwd
+    
