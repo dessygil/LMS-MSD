@@ -31,7 +31,7 @@ def test_sample_model():
 @pytest.mark.django_db
 def test_machine_model():
     machine = Machine.objects.create(
-        name="Test Machine", time_takes=120, created_at=timezone.now()
+        name="Test Machine", duration=120, created_at=timezone.now()
     )
     assert machine.name == "Test Machine"
 
@@ -42,7 +42,7 @@ def test_machine_experiment_connector_model():
         name="Test Experiment", created_at=timezone.now()
     )
     machine = Machine.objects.create(
-        name="Test Machine", time_takes=120, created_at=timezone.now()
+        name="Test Machine", duration=120, created_at=timezone.now()
     )
     connector = MachineExperimentConnector.objects.create(
         experiment=experiment, machine=machine, created_at=timezone.now()

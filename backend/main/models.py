@@ -6,7 +6,6 @@ from django.utils import timezone
 # Ways of tracking data eg logs??
 # different labs biology vs chemistry vs materials focused
 # make sure all naming conventions are followed for this project
-# time_takes should be called duration
 # the duration should be variable for the machine based on the experiment
 
 
@@ -65,7 +64,7 @@ class Machine(models.Model):
     Fields:
         id: Primary key for the machine
         name: Name of the machine
-        time_takes: Time it takes to run the machine in seconds
+        duration: Time it takes to run the machine in seconds
         created_at: Date the machine was created
         updated_at: Date the machine was last updated
     """
@@ -74,7 +73,7 @@ class Machine(models.Model):
     name = models.CharField(max_length=255)
     model_number = models.CharField(max_length=255, default="Unknown")
     manufacturer = models.CharField(max_length=255, default="Unknown")
-    time_takes = models.DecimalField(max_digits=8, decimal_places=2)
+    duration = models.DecimalField(max_digits=8, decimal_places=2)
     notes = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)

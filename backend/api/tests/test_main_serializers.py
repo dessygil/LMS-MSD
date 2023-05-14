@@ -32,7 +32,7 @@ def experiment():
 def machine():
     return Machine.objects.create(
         name="Test Machine",
-        time_takes=120,
+        duration=120,
         model_number="Test Model",
         manufacturer="Test Manufacturer",
     )
@@ -42,13 +42,13 @@ def machine():
 def machine_two():
     machine_one = Machine.objects.create(
         name="Test Machine One",
-        time_takes=120,
+        duration=120,
         model_number="Test Model",
         manufacturer="Test Manufacturer",
     )
     machine_two = Machine.objects.create(
         name="Test Machine Two",
-        time_takes=120,
+        duration=120,
         model_number="Test Model",
         manufacturer="Test Manufacturer",
     )
@@ -122,7 +122,7 @@ def test_sample_serializer_create(experiment):
 def test_machine_serializer_create():
     machine_data = {
         "name": "Test Machine",
-        "time_takes": 120,
+        "duration": 120,
         "model_number": "Test Model",
         "manufacturer": "Test Manufacturer",
     }
@@ -131,7 +131,7 @@ def test_machine_serializer_create():
     machine = serializer.save()
 
     assert machine.name == machine_data["name"]
-    assert machine.time_takes == machine_data["time_takes"]
+    assert machine.duration == machine_data["duration"]
 
 
 @pytest.mark.django_db
@@ -183,24 +183,24 @@ def test_sample_serializer_update(sample, experiment):
 @pytest.mark.django_db
 def test_machine_serializer_update(machine):
     new_name = "Updated Machine"
-    new_time_takes = 200
+    new_duration = 200
     machine_data = {
         "name": new_name,
-        "time_takes": new_time_takes,
+        "duration": new_duration,
     }
     serializer = MachineSerializer(machine, data=machine_data, partial=True)
     serializer.is_valid(raise_exception=True)
     updated_machine = serializer.save()
 
     assert updated_machine.name == new_name
-    assert updated_machine.time_takes == new_time_takes
+    assert updated_machine.duration == new_duration
     assert updated_machine.created_at == machine.created_at
 
 
 @pytest.mark.django_db
 def test_machine_experiment_connector_serializer_update(experiment, machine):
     new_experiment = Experiment.objects.create(name="New Experiment")
-    new_machine = Machine.objects.create(name="New Machine", time_takes=100)
+    new_machine = Machine.objects.create(name="New Machine", duration=100)
     connector = MachineExperimentConnector.objects.create(
         experiment=experiment, machine=machine
     )
@@ -246,7 +246,7 @@ def test_sample_serializer_invalid_data(user, experiment):
 def test_machine_serializer_invalid_data():
     invalid_machine_data = {
         "name": "",
-        "time_takes": -1,
+        "duration": -1,
     }
     serializer = MachineSerializer(data=invalid_machine_data)
     with pytest.raises(ValidationError):

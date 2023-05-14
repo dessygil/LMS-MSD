@@ -236,7 +236,7 @@ def update_machine(request, pk=None):
 
     Args:
         id: Primary key for the machine
-        time_takes: Time the machine takes to process a sample
+        duration: Time the machine takes to process a sample
     """
     queryset = Machine.objects.all()
     machine = get_object_or_404(queryset, pk=pk)

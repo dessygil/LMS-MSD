@@ -79,7 +79,7 @@ def test_create_sample(auth_token, client):
 @pytest.mark.django_db
 def test_retrieve_sample(auth_token, client):
     user = lmsUser.objects.create(email='testuser@gmail.com', name='testuser')
-    machine = Machine.objects.create(name='Test Machine', time_takes=10)
+    machine = Machine.objects.create(name='Test Machine', duration=10)
     experiment = Experiment.objects.create(name='Test Experiment')
     sample_data = {
         "name": "Test Sample",
@@ -136,7 +136,7 @@ def test_destroy_sample(auth_token, client):
 def test_list_experiments():
     api_client = APIClient()
 
-    machine = Machine.objects.create(name="Machine 1", time_takes=10)
+    machine = Machine.objects.create(name="Machine 1", duration=10)
     experiment_data = {
         "name": "Experiment 1",
         "machine_ids": [machine.id],
@@ -154,7 +154,7 @@ def test_list_experiments():
 def test_create_experiment():
     api_client = APIClient()
 
-    machine = Machine.objects.create(name="Machine 1", time_takes=10)
+    machine = Machine.objects.create(name="Machine 1", duration=10)
 
     url = reverse("experiment-create")
     data = {"name": "New Experiment", "machine_ids": [machine.id]}
@@ -166,7 +166,7 @@ def test_create_experiment():
 def test_retrieve_experiment():
     api_client = APIClient()
 
-    machine = Machine.objects.create(name="Machine 1", time_takes=10)
+    machine = Machine.objects.create(name="Machine 1", duration=10)
     experiment_data = {
         "name": "Experiment 1",
         "machine_ids": [machine.id],
@@ -186,8 +186,8 @@ def test_retrieve_experiment():
 def test_update_experiment():
     api_client = APIClient()
 
-    machine = Machine.objects.create(name="Machine 1", time_takes=10)
-    machine_two = Machine.objects.create(name="Machine 2", time_takes=10)
+    machine = Machine.objects.create(name="Machine 1", duration=10)
+    machine_two = Machine.objects.create(name="Machine 2", duration=10)
     experiment_data = {
         "name": "Experiment 1",
         "machine_ids": [machine.id],
@@ -208,7 +208,7 @@ def test_update_experiment():
 def test_destroy_experiment():
     api_client = APIClient()
 
-    machine = Machine.objects.create(name="Machine 1", time_takes=10)
+    machine = Machine.objects.create(name="Machine 1", duration=10)
     experiment_data = {
         "name": "Experiment 1",
         "machine_ids": [machine.id],
@@ -228,7 +228,7 @@ def test_destroy_experiment():
 def test_list_machines():
     api_client = APIClient()
 
-    machine = Machine.objects.create(name="Machine1", time_takes=10)
+    machine = Machine.objects.create(name="Machine1", duration=10)
     url = reverse("machine-list")
     response = api_client.get(url)
     assert response.status_code == 200
@@ -242,7 +242,7 @@ def test_create_machine():
 
     data = {
         "name": "Machine1",
-        "time_takes": 10,
+        "duration": 10,
         "manufacturer": "Test Manufacturer",
         "model_number": "Test Model Number",
     }
@@ -253,14 +253,14 @@ def test_create_machine():
     if machine is None:
         pytest.fail("No Machine objects found in the database")
     assert machine.name == data["name"]
-    assert machine.time_takes == data["time_takes"]
+    assert machine.duration == data["duration"]
 
 
 @pytest.mark.django_db
 def test_retrieve_machine():
     api_client = APIClient()
 
-    machine = Machine.objects.create(name="Machine1", time_takes=10)
+    machine = Machine.objects.create(name="Machine1", duration=10)
     url = reverse("machine-retrieve", kwargs={"pk": machine.id})
     response = api_client.get(url)
     assert response.status_code == 200
@@ -273,7 +273,7 @@ def test_update_machine():
 
     data = {
         "name": "Machine1",
-        "time_takes": 10,
+        "duration": 10,
         "manufacturer": "Test Manufacturer",
         "model_number": "Test Model Number",
     }
@@ -282,7 +282,7 @@ def test_update_machine():
 
     updated_data = {
         "name": "UpdatedMachine",
-        "time_takes": 15,
+        "duration": 15,
         "manufacturer": "Test Manufacturer",
         "model_number": "Test Model Number",
     }
@@ -295,7 +295,7 @@ def test_update_machine():
 def test_destroy_machine():
     api_client = APIClient()
 
-    machine = Machine.objects.create(name="Machine1", time_takes=10)
+    machine = Machine.objects.create(name="Machine1", duration=10)
     url = reverse("machine-destroy", kwargs={"pk": machine.id})
     response = api_client.delete(url)
     assert response.status_code == 204

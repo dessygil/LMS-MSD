@@ -112,28 +112,28 @@ class MachineSerializer(serializers.ModelSerializer):
     Fields:
         id: Primary key for the machine
         name: Name of the machine
-        time_takes: Time it takes to run the machine in seconds
+        duration: Time it takes to run the machine in seconds
         model_number: Foreign key to the model
         manufacturer: Foreign key to the manufacturer
         notes: Notes about the machine
     """
 
     name = serializers.CharField(max_length=255, required=True)
-    time_takes = serializers.IntegerField(required=True)
+    duration = serializers.IntegerField(required=True)
     model_number = serializers.CharField(max_length=255, required=True)
     manufacturer = serializers.CharField(max_length=255, required=True)
     notes = serializers.CharField(max_length=255, allow_blank=True, required=False)
 
     class Meta:
         model = Machine
-        fields = ["id", "name", "time_takes", "model_number", "manufacturer", "notes"]
+        fields = ["id", "name", "duration", "model_number", "manufacturer", "notes"]
 
     def create(self, validated_data):
         return Machine.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
-        instance.time_takes = validated_data.get("time_takes", instance.time_takes)
+        instance.duration = validated_data.get("duration", instance.duration)
         instance.updated_at = datetime.datetime.now()
         instance.model_number = validated_data.get(
             "model_number", instance.model_number
