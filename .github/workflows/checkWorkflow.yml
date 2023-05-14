@@ -1,0 +1,23 @@
+name: Display Workflow Folder
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  display:
+    runs-on: ubuntu-latest
+
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Navigate to Folder
+      run: cd lms-app
+
+    - name: Display Folder
+      run: |
+        echo "Workflow Folder: ${{ github.workspace }}"
