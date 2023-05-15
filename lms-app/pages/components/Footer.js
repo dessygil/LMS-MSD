@@ -1,5 +1,4 @@
-import React from 'react';
-
+import React from 'react'
 
 export default function Footer() {
   return (
@@ -15,11 +14,21 @@ export default function Footer() {
         <div>
           <h5 className="text-lg mb-2">Links</h5>
           <ul className="space-y-1 text-sm">
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Research</a></li>
-            <li><a href="#">Publications</a></li>
-            <li><a href="#">Team</a></li>
-            <li><a href="#">Contact Us</a></li>
+            <li>
+              <a href="#">Services</a>
+            </li>
+            <li>
+              <a href="#">Research</a>
+            </li>
+            <li>
+              <a href="#">Publications</a>
+            </li>
+            <li>
+              <a href="#">Team</a>
+            </li>
+            <li>
+              <a href="#">Contact Us</a>
+            </li>
           </ul>
         </div>
 
@@ -35,8 +44,9 @@ export default function Footer() {
       </div>
 
       <div className="mt-4 text-center text-sm border-t border-gray-700 pt-4">
-        &copy; {new Date().getFullYear()} Your Business Name. All rights reserved.
+        &copy; {new Date().getFullYear()} Your Business Name. All rights
+        reserved.
       </div>
     </footer>
-  );
+  )
 }

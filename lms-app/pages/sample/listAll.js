@@ -1,11 +1,11 @@
-import React from 'react';
+import React from 'react'
 
 const ListAll = () => {
-    return (
-        <div>
-            <h1>About Page</h1>
-        </div>
-    );
-};
+  return (
+    <div>
+      <h1>About Page</h1>
+    </div>
+  )
+}
 
-export default ListAll;
+export default ListAll
