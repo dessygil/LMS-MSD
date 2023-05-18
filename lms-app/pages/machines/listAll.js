@@ -25,7 +25,7 @@ const MachineList = () => {
             <th>Name</th>
             <th>Model Number</th>
             <th>Manufacturer</th>
-            <th>Time Takes</th>
+            <th>Machine Type</th>
             <th>Notes</th>
           </tr>
         </thead>
@@ -38,7 +38,7 @@ const MachineList = () => {
               <td>{machine.name}</td>
               <td>{machine.model_number}</td>
               <td>{machine.manufacturer}</td>
-              <td>{machine.duration}</td>
+              <td>{machine.machine_type}</td>
               <td>{machine.notes}</td>
             </tr>
           ))}

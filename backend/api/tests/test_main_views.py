@@ -136,10 +136,11 @@ def test_destroy_sample(auth_token, client):
 def test_list_experiments():
     api_client = APIClient()
 
-    machine = Machine.objects.create(name="Machine 1", duration=10)
+    machine = Machine.objects.create(name="Machine 1")
     experiment_data = {
         "name": "Experiment 1",
         "machine_ids": [machine.id],
+        "durations": [10],
     }
     experiment = ExperimentSerializer(data=experiment_data)
     experiment.is_valid(raise_exception=True)
@@ -154,10 +155,14 @@ def test_list_experiments():
 def test_create_experiment():
     api_client = APIClient()
 
-    machine = Machine.objects.create(name="Machine 1", duration=10)
+    machine = Machine.objects.create(name="Machine 1")
 
     url = reverse("experiment-create")
-    data = {"name": "New Experiment", "machine_ids": [machine.id]}
+    data = {
+        "name": "New Experiment", 
+        "machine_ids": [machine.id],
+        "durations": [10],
+    }
     response = api_client.post(url, data)
     assert response.status_code == 201
 
@@ -166,11 +171,13 @@ def test_create_experiment():
 def test_retrieve_experiment():
     api_client = APIClient()
 
-    machine = Machine.objects.create(name="Machine 1", duration=10)
+    machine = Machine.objects.create(name="Machine 1")
     experiment_data = {
         "name": "Experiment 1",
         "machine_ids": [machine.id],
+        "durations": [10],
     }
+    
     experiment = ExperimentSerializer(data=experiment_data)
     experiment.is_valid(raise_exception=True)
     experiment.save()
@@ -186,11 +193,12 @@ def test_retrieve_experiment():
 def test_update_experiment():
     api_client = APIClient()
 
-    machine = Machine.objects.create(name="Machine 1", duration=10)
-    machine_two = Machine.objects.create(name="Machine 2", duration=10)
+    machine = Machine.objects.create(name="Machine 1")
+    machine_two = Machine.objects.create(name="Machine 2")
     experiment_data = {
         "name": "Experiment 1",
         "machine_ids": [machine.id],
+        "durations": [10],
     }
     experiment = ExperimentSerializer(data=experiment_data)
     experiment.is_valid(raise_exception=True)
@@ -208,10 +216,11 @@ def test_update_experiment():
 def test_destroy_experiment():
     api_client = APIClient()
 
-    machine = Machine.objects.create(name="Machine 1", duration=10)
+    machine = Machine.objects.create(name="Machine 1")
     experiment_data = {
         "name": "Experiment 1",
         "machine_ids": [machine.id],
+        "durations": [10],
     }
     experiment = ExperimentSerializer(data=experiment_data)
     experiment.is_valid(raise_exception=True)
@@ -228,7 +237,7 @@ def test_destroy_experiment():
 def test_list_machines():
     api_client = APIClient()
 
-    machine = Machine.objects.create(name="Machine1", duration=10)
+    machine = Machine.objects.create(name="Machine1")
     url = reverse("machine-list")
     response = api_client.get(url)
     assert response.status_code == 200
@@ -242,9 +251,10 @@ def test_create_machine():
 
     data = {
         "name": "Machine1",
-        "duration": 10,
         "manufacturer": "Test Manufacturer",
         "model_number": "Test Model Number",
+        "machine_type": "Test Machine Type",
+        "notes": "Test Notes",
     }
     url = reverse("machine-create")
     response = api_client.post(url, data)
@@ -252,15 +262,20 @@ def test_create_machine():
     machine = Machine.objects.last()
     if machine is None:
         pytest.fail("No Machine objects found in the database")
+        
     assert machine.name == data["name"]
-    assert machine.duration == data["duration"]
+    assert machine.manufacturer == data["manufacturer"]
+    assert machine.model_number == data["model_number"]
+    assert machine.machine_type == data["machine_type"]
+    assert machine.notes == data["notes"]
+    
 
 
 @pytest.mark.django_db
 def test_retrieve_machine():
     api_client = APIClient()
 
-    machine = Machine.objects.create(name="Machine1", duration=10)
+    machine = Machine.objects.create(name="Machine1")
     url = reverse("machine-retrieve", kwargs={"pk": machine.id})
     response = api_client.get(url)
     assert response.status_code == 200
@@ -273,18 +288,20 @@ def test_update_machine():
 
     data = {
         "name": "Machine1",
-        "duration": 10,
         "manufacturer": "Test Manufacturer",
         "model_number": "Test Model Number",
+        "machine_type": "Test Machine Type",
+        "notes": "Test Notes",
     }
 
     machine = Machine.objects.create(**data)
 
     updated_data = {
         "name": "UpdatedMachine",
-        "duration": 15,
-        "manufacturer": "Test Manufacturer",
-        "model_number": "Test Model Number",
+        "manufacturer": "Updated Manufacturer",
+        "model_number": "Updated Model Number",
+        "machine_type": "Updated Machine Type",
+        "notes": "Updated Notes",
     }
     url = reverse("machine-update", kwargs={"pk": machine.id})
     response = api_client.put(url, updated_data)
@@ -295,7 +312,7 @@ def test_update_machine():
 def test_destroy_machine():
     api_client = APIClient()
 
-    machine = Machine.objects.create(name="Machine1", duration=10)
+    machine = Machine.objects.create(name="Machine1")
     url = reverse("machine-destroy", kwargs={"pk": machine.id})
     response = api_client.delete(url)
     assert response.status_code == 204

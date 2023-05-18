@@ -6,7 +6,7 @@ WORKDIR /lms-app
 
 COPY ./package*.json ./
 
-RUN npm install
+RUN npm install -g npm
 
 # COPY next.config.js ./next.config.js
 # COPY tailwind.config.js ./tailwind.config.js

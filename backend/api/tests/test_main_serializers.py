@@ -24,7 +24,7 @@ def user():
 @pytest.fixture
 def experiment():
     return Experiment.objects.create(
-        name="Test Experiment",
+        name="Test Experiment", notes="test notes",
     )
 
 
@@ -32,9 +32,10 @@ def experiment():
 def machine():
     return Machine.objects.create(
         name="Test Machine",
-        duration=120,
+        machine_type="Test Machine",
         model_number="Test Model",
         manufacturer="Test Manufacturer",
+        notes="Test Notes",
     )
 
 
@@ -42,15 +43,17 @@ def machine():
 def machine_two():
     machine_one = Machine.objects.create(
         name="Test Machine One",
-        duration=120,
+        machine_type="Test Machine",
         model_number="Test Model",
         manufacturer="Test Manufacturer",
+        notes="Test Notes",
     )
     machine_two = Machine.objects.create(
         name="Test Machine Two",
-        duration=120,
+        machine_type="Test Machine",
         model_number="Test Model",
         manufacturer="Test Manufacturer",
+        notes="Test Notes", 
     )
     return [machine_one, machine_two]
 
@@ -65,6 +68,7 @@ def test_experiment_serializer_create(user, machine):
     experiment_data = {
         "name": "Test Experiment",
         "machine_ids": [machine.id],
+        "durations": [10],
     }
     serializer = ExperimentSerializer(data=experiment_data)
     serializer.is_valid(raise_exception=True)
@@ -81,6 +85,7 @@ def test_experiment_serializer_create_multiple_machines(user, machine_two):
     experiment_data = {
         "name": "Test Experiment",
         "machine_ids": [machine_two[0].id, machine_two[1].id],
+        "durations": [10, 20],
     }
     serializer = ExperimentSerializer(data=experiment_data)
     serializer.is_valid(raise_exception=True)
@@ -95,6 +100,7 @@ def test_experiment_serializer_create_no_machine(user):
     experiment_data = {
         "name": "Test Experiment",
         "machine_ids": [],
+        "durations": [],
     }
     serializer = ExperimentSerializer(data=experiment_data)
     with pytest.raises(serializers.ValidationError):
@@ -122,16 +128,20 @@ def test_sample_serializer_create(experiment):
 def test_machine_serializer_create():
     machine_data = {
         "name": "Test Machine",
-        "duration": 120,
         "model_number": "Test Model",
         "manufacturer": "Test Manufacturer",
+        "machine_type": "Test Machine",
+        "notes": "Test Notes",
     }
     serializer = MachineSerializer(data=machine_data)
     serializer.is_valid(raise_exception=True)
     machine = serializer.save()
 
     assert machine.name == machine_data["name"]
-    assert machine.duration == machine_data["duration"]
+    assert machine.model_number == machine_data["model_number"]
+    assert machine.manufacturer == machine_data["manufacturer"]
+    assert machine.machine_type == machine_data["machine_type"]
+    assert machine.notes == machine_data["notes"]
 
 
 @pytest.mark.django_db
@@ -139,6 +149,7 @@ def test_machine_experiment_connector_serializer_create(experiment, machine):
     connector_data = {
         "experiment": experiment.id,
         "machine": machine.id,
+        "duration": 10,
     }
     serializer = MachineExperimentConnectorSerializer(data=connector_data)
     serializer.is_valid(raise_exception=True)
@@ -146,61 +157,62 @@ def test_machine_experiment_connector_serializer_create(experiment, machine):
 
     assert connector.experiment == experiment
     assert connector.machine == machine
+    assert connector.duration == connector_data["duration"]
 
 
 @pytest.mark.django_db
 def test_experiment_serializer_update(experiment, machine):
-    new_name = "Updated Experiment"
     experiment_data = {
-        "name": new_name,
+        "name": "Updated Experiment",
     }
     serializer = ExperimentSerializer(experiment, data=experiment_data, partial=True)
     serializer.is_valid(raise_exception=True)
     updated_experiment = serializer.save()
 
-    assert updated_experiment.name == new_name
+    assert updated_experiment.name == experiment_data["name"]
     assert updated_experiment.created_at == experiment.created_at
 
 
 @pytest.mark.django_db
 def test_sample_serializer_update(sample, experiment):
-    new_name = "Updated Sample"
-    new_idle_time = 100
     sample_data = {
-        "name": new_name,
-        "idle_time": new_idle_time,
+        "name": "Updated Sample",
+        "idle_time": 100,
     }
     serializer = SampleSerializer(sample, data=sample_data, partial=True)
     serializer.is_valid(raise_exception=True)
     updated_sample = serializer.save()
 
-    assert updated_sample.name == new_name
+    assert updated_sample.name == sample_data["name"]
     assert updated_sample.experiment == experiment
-    assert updated_sample.idle_time == new_idle_time
+    assert updated_sample.idle_time == sample_data["idle_time"]
     assert updated_sample.created_at == sample.created_at
 
 
 @pytest.mark.django_db
 def test_machine_serializer_update(machine):
-    new_name = "Updated Machine"
-    new_duration = 200
     machine_data = {
-        "name": new_name,
-        "duration": new_duration,
+        "name": "Updated Machine",
+        "machine_type": "Updated Machine",
+        "model_number": "Updated Model",
+        "manufacturer": "Updated Manufacturer",
+        "notes": "Updated Notes",
     }
     serializer = MachineSerializer(machine, data=machine_data, partial=True)
     serializer.is_valid(raise_exception=True)
     updated_machine = serializer.save()
 
-    assert updated_machine.name == new_name
-    assert updated_machine.duration == new_duration
-    assert updated_machine.created_at == machine.created_at
+    assert updated_machine.name == machine_data["name"]
+    assert updated_machine.machine_type == machine_data["machine_type"]
+    assert updated_machine.model_number == machine_data["model_number"]
+    assert updated_machine.manufacturer == machine_data["manufacturer"]
+    assert updated_machine.notes == machine_data["notes"]
 
 
 @pytest.mark.django_db
 def test_machine_experiment_connector_serializer_update(experiment, machine):
     new_experiment = Experiment.objects.create(name="New Experiment")
-    new_machine = Machine.objects.create(name="New Machine", duration=100)
+    new_machine = Machine.objects.create(name="New Machine")
     connector = MachineExperimentConnector.objects.create(
         experiment=experiment, machine=machine
     )

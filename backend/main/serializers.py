@@ -16,18 +16,24 @@ class ExperimentSerializer(serializers.ModelSerializer):
         id: Primary key for the experiment
         name: Name of the experiment
         machine_ids: List of machine ids to be used in the experiment
+        durations: List of the duration of each machine in seconds
         notes: Notes about the experiment
     """
 
     machine_ids = serializers.ListField(
         child=serializers.IntegerField(), required=True, write_only=True
     )
+    durations = serializers.ListField(
+        child=serializers.IntegerField(), required=False, write_only=True
+    )
     name = serializers.CharField(max_length=255, required=True)
-    notes = serializers.CharField(max_length=255, allow_blank=True, required=False)
+    notes = serializers.CharField(
+        max_length=255, allow_blank=True, required=False
+    )
 
     class Meta:
         model = Experiment
-        fields = ["id", "name", "created_at", "machine_ids", "notes"]
+        fields = ["id", "name", "created_at", "machine_ids", "durations", "notes"]
 
     def validate_machine_ids(self, value):
         if len(value) == 0:
@@ -38,6 +44,7 @@ class ExperimentSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         machine_ids = validated_data.pop("machine_ids", [])
+        durations = validated_data.pop("durations", [])
 
         if len(machine_ids) == 0:
             raise serializers.ValidationError(
@@ -46,10 +53,10 @@ class ExperimentSerializer(serializers.ModelSerializer):
 
         experiment = Experiment.objects.create(**validated_data)
 
-        for machine_id in machine_ids:
-            machine = Machine.objects.get(pk=machine_id)
+        for i in range(len(machine_ids)):
+            machine = Machine.objects.get(pk=machine_ids[i])
             MachineExperimentConnector.objects.create(
-                experiment=experiment, machine=machine
+                experiment=experiment, machine=machine, duration=durations[i]
             )
 
         return experiment
@@ -98,8 +105,12 @@ class SampleSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
-        instance.experiment = validated_data.get("experiment", instance.experiment)
-        instance.idle_time = validated_data.get("idle_time", instance.idle_time)
+        instance.experiment = validated_data.get(
+            "experiment", instance.experiment
+        )
+        instance.idle_time = validated_data.get(
+            "idle_time", instance.idle_time
+        )
         instance.updated_at = datetime.datetime.now()
         instance.notes = validated_data.get("notes", instance.notes)
         instance.save()
@@ -112,34 +123,36 @@ class MachineSerializer(serializers.ModelSerializer):
     Fields:
         id: Primary key for the machine
         name: Name of the machine
-        duration: Time it takes to run the machine in seconds
-        model_number: Foreign key to the model
-        manufacturer: Foreign key to the manufacturer
+        model_number: Model number of the machine
+        manufacturer: Manufacturer of the machine
+        machine_type: Type of machine
         notes: Notes about the machine
     """
 
     name = serializers.CharField(max_length=255, required=True)
-    duration = serializers.IntegerField(required=True)
     model_number = serializers.CharField(max_length=255, required=True)
     manufacturer = serializers.CharField(max_length=255, required=True)
+    machine_type = serializers.CharField(max_length=255, required=True)
     notes = serializers.CharField(max_length=255, allow_blank=True, required=False)
 
     class Meta:
         model = Machine
-        fields = ["id", "name", "duration", "model_number", "manufacturer", "notes"]
+        fields = ["id", "name", "model_number", "manufacturer", "machine_type", "notes"]
 
     def create(self, validated_data):
         return Machine.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
-        instance.duration = validated_data.get("duration", instance.duration)
         instance.updated_at = datetime.datetime.now()
         instance.model_number = validated_data.get(
             "model_number", instance.model_number
         )
         instance.manufacturer = validated_data.get(
             "manufacturer", instance.manufacturer
+        )
+        instance.machine_type = validated_data.get(
+            "machine_type", instance.machine_type
         )
         instance.notes = validated_data.get("notes", instance.notes)
         instance.save()
@@ -153,21 +166,29 @@ class MachineExperimentConnectorSerializer(serializers.ModelSerializer):
         id: Primary key for the machine experiment connector
         experiment: Foreign key to the experiment
         machine: Foreign key to the machine
+        duration: Time it takes to run the machine in seconds
         created_at: Date the machine experiment connector was created
     """
 
-    experiment = serializers.PrimaryKeyRelatedField(queryset=Experiment.objects.all())
-    machine = serializers.PrimaryKeyRelatedField(queryset=Machine.objects.all())
-
+    experiment = serializers.PrimaryKeyRelatedField(
+        queryset=Experiment.objects.all()
+    )
+    machine = serializers.PrimaryKeyRelatedField(
+        queryset=Machine.objects.all()
+    )
+    duration = serializers.IntegerField(required=True)
+    
     class Meta:
         model = MachineExperimentConnector
-        fields = ["id", "experiment", "machine"]
+        fields = ["id", "experiment", "machine", "duration"]
 
     def create(self, validated_data):
         return MachineExperimentConnector.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        instance.experiment = validated_data.get("experiment", instance.experiment)
+        instance.experiment = validated_data.get(
+            "experiment", instance.experiment
+        )
         instance.machine = validated_data.get("machine", instance.machine)
         instance.updated_at = datetime.datetime.now()
         instance.save()

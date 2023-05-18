@@ -209,6 +209,10 @@ def create_machine(request):
     Args:
         id: Primary key for the machine
         time: Time the machine was created
+        machine_type: Type of machine
+        model_number: Model number of the machine
+        manufacturer: Manufacturer of the machine
+        notes: Notes about the machine
     """
     serializer = MachineSerializer(data=request.data)
     if serializer.is_valid():
@@ -237,6 +241,10 @@ def update_machine(request, pk=None):
     Args:
         id: Primary key for the machine
         duration: Time the machine takes to process a sample
+        model_number: Model number of the machine
+        machine_type: Type of machine
+        manufacturer: Manufacturer of the machine
+        notes: Notes about the machine
     """
     queryset = Machine.objects.all()
     machine = get_object_or_404(queryset, pk=pk)

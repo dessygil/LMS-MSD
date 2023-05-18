@@ -39,6 +39,7 @@ class Sample(models.Model):
         name: Name of the sample
         experiment: Foreign key to the experiment
         idle_time: Time the sample is idle in seconds
+        notes: Notes about the sample
         created_at: Date the sample was created
         updated_at: Date the sample was last updated
     """
@@ -71,9 +72,9 @@ class Machine(models.Model):
 
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
+    machine_type = models.CharField(max_length=255, default="Unknown")
     model_number = models.CharField(max_length=255, default="Unknown")
     manufacturer = models.CharField(max_length=255, default="Unknown")
-    duration = models.DecimalField(max_digits=8, decimal_places=2)
     notes = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
@@ -101,6 +102,7 @@ class MachineExperimentConnector(models.Model):
     machine = models.ForeignKey(
         Machine, on_delete=models.CASCADE, related_name="experiments"
     )
+    duration = models.DecimalField(max_digits=8, decimal_places=2, default=3600)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
 
